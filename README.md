@@ -1,1 +1,1 @@
-Files for personal website: [shayporeilly.net](https://shayporeilly.net) A modern, polished, single-page portfolio website designed for product managers and business professionals. Built with clean HTML, CSS, and JavaScript - no frameworks required!
+Files for personal website: [shayoreilly.net](https://shayoreilly.net) A modern, polished, single-page portfolio website designed for product managers and business professionals. Built with clean HTML, CSS, and JavaScript - no frameworks required!
