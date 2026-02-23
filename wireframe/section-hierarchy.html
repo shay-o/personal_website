@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Section Hierarchy — Personal Website</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #ffffff; color: #000000; line-height: 1.5; font-size: 14px; }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    button { font-family: inherit; cursor: pointer; background: none; border: none; }
+
+    /* ── Title Bar ── */
+    .title-bar {
+      background: #000000;
+      color: #ffffff;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .title-bar strong { font-size: 14px; }
+    .title-bar .rec { background: #ffffff; color: #000000; padding: 2px 8px; font-size: 11px; font-weight: 700; }
+
+    /* ── Tabs ── */
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid #000000;
+      background: #ffffff;
+      position: sticky;
+      top: 37px;
+      z-index: 99;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      padding: 10px 18px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #666666;
+      border: none;
+      background: none;
+      cursor: pointer;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+    }
+    .tab-btn:hover { color: #000000; background: #eeeeee; }
+    .tab-btn.active { color: #000000; border-bottom-color: #000000; }
+
+    /* ── Panels ── */
+    .panel { display: none; padding: 32px 20px; max-width: 760px; margin: 0 auto; }
+    .panel.active { display: block; }
+
+    /* ── Option Header ── */
+    .option-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #999999;
+      margin-bottom: 4px;
+    }
+    .option-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .option-desc { font-size: 13px; color: #666666; margin-bottom: 24px; }
+
+    .wireframe-box {
+      border: 1px solid #cccccc;
+      padding: 0;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+
+    /* ── Annotations ── */
+    .annotations { margin-top: 16px; padding-top: 16px; border-top: 1px solid #eeeeee; }
+    .annotation { display: flex; gap: 10px; margin-bottom: 8px; font-size: 12px; color: #666666; align-items: flex-start; }
+    .ann-num { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border: 1px solid #999999; border-radius: 50%; font-size: 10px; font-weight: 700; color: #333333; flex-shrink: 0; margin-top: 1px; }
+
+    /* ── Divider ── */
+    .section-divider { border: none; border-top: 1px solid #eeeeee; margin: 32px 0; }
+
+    /* ════════════════════════════════
+       OPTION 1: SAFE — subtle weight/size bump
+       ════════════════════════════════ */
+    .o1-site-header { padding: 24px 20px 16px; border-bottom: 2px solid #000000; }
+    .o1-site-name { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .o1-site-role { font-size: 12px; color: #444444; }
+
+    /* Section accordion — slightly larger */
+    .o1-acc-header {
+      width: 100%; display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 20px; border-bottom: 1px solid #eeeeee; cursor: pointer;
+      background: none; border-left: none; border-right: none; border-top: none;
+      transition: background 0.12s;
+    }
+    .o1-acc-header:hover { background: #fafafa; }
+    .o1-acc-title { font-size: 14px; font-weight: 700; }
+    .o1-acc-summary { font-size: 11px; color: #999999; margin-left: 12px; }
+    .o1-acc-meta { font-size: 10px; background: #f0f0f0; color: #666666; padding: 2px 6px; margin-right: 8px; }
+    .o1-acc-arrow { font-size: 14px; color: #bbbbbb; display: inline-block; transition: transform 0.2s; }
+    .o1-acc-header[aria-expanded="true"] .o1-acc-arrow { transform: rotate(90deg); color: #000000; }
+    .o1-acc-body { display: none; }
+    .o1-acc-body.open { display: block; }
+
+    /* Role items — same size as today */
+    .o1-role-header {
+      width: 100%; display: flex; justify-content: space-between; align-items: flex-start;
+      padding: 10px 20px; cursor: pointer; background: none;
+      border: none; border-bottom: 1px solid #f5f5f5;
+      transition: background 0.12s; text-align: left;
+    }
+    .o1-role-header:hover { background: #fafafa; }
+    .o1-role-title { font-size: 13px; font-weight: 700; color: #111111; }
+    .o1-role-company { font-size: 11px; color: #888888; margin-top: 2px; }
+    .o1-role-date { font-size: 11px; color: #cccccc; white-space: nowrap; }
+    .o1-role-arrow { font-size: 11px; color: #cccccc; margin-left: 8px; display: inline-block; transition: transform 0.2s; }
+    .o1-role-header[aria-expanded="true"] .o1-role-arrow { transform: rotate(90deg); color: #666666; }
+    .o1-role-detail { display: none; padding: 8px 20px 14px 36px; border-left: 2px solid #eeeeee; margin: 0 20px 0 20px; }
+    .o1-role-detail.open { display: block; }
+    .o1-role-detail p { font-size: 12px; color: #555555; line-height: 1.6; }
+
+    /* ann markers */
+    .ann-marker { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; border: 1px solid #999999; border-radius: 50%; font-size: 9px; font-weight: 700; color: #666666; vertical-align: middle; margin-left: 4px; }
+
+    /* ════════════════════════════════
+       OPTION 2: SIZE CONTRAST
+       Strong typographic differentiation
+       ════════════════════════════════ */
+    .o2-site-header { padding: 24px 20px 16px; border-bottom: 2px solid #000000; }
+    .o2-site-name { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .o2-site-role { font-size: 12px; color: #444444; }
+
+    .o2-acc-header {
+      width: 100%; display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 20px; cursor: pointer; background: none;
+      border: none; border-bottom: 1px solid #dddddd; transition: background 0.12s; text-align: left;
+    }
+    .o2-acc-header:hover { background: #fafafa; }
+    /* BIG section title */
+    .o2-acc-title { font-size: 17px; font-weight: 800; letter-spacing: -0.01em; }
+    .o2-acc-summary { font-size: 11px; color: #999999; margin-left: 12px; }
+    .o2-acc-meta { font-size: 10px; background: #f0f0f0; color: #666666; padding: 2px 6px; margin-right: 8px; }
+    .o2-acc-arrow { font-size: 16px; color: #bbbbbb; display: inline-block; transition: transform 0.2s; }
+    .o2-acc-header[aria-expanded="true"] .o2-acc-arrow { transform: rotate(90deg); color: #000000; }
+    .o2-acc-body { display: none; }
+    .o2-acc-body.open { display: block; }
+
+    .o2-role-header {
+      width: 100%; display: flex; justify-content: space-between; align-items: flex-start;
+      padding: 9px 20px; cursor: pointer; background: none;
+      border: none; border-bottom: 1px solid #f5f5f5; transition: background 0.12s; text-align: left;
+    }
+    .o2-role-header:hover { background: #fafafa; }
+    /* SMALL role title */
+    .o2-role-title { font-size: 12px; font-weight: 600; color: #333333; }
+    .o2-role-company { font-size: 10px; color: #999999; margin-top: 1px; }
+    .o2-role-date { font-size: 10px; color: #cccccc; white-space: nowrap; }
+    .o2-role-arrow { font-size: 10px; color: #cccccc; margin-left: 6px; display: inline-block; transition: transform 0.2s; }
+    .o2-role-header[aria-expanded="true"] .o2-role-arrow { transform: rotate(90deg); color: #666666; }
+    .o2-role-detail { display: none; padding: 8px 20px 12px 36px; border-left: 2px solid #eeeeee; margin: 0 20px; }
+    .o2-role-detail.open { display: block; }
+    .o2-role-detail p { font-size: 11px; color: #555555; line-height: 1.6; }
+
+    /* ════════════════════════════════
+       OPTION 3: INDENTED ROWS
+       Role items indented under section
+       ════════════════════════════════ */
+    .o3-site-header { padding: 24px 20px 16px; border-bottom: 2px solid #000000; }
+    .o3-site-name { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .o3-site-role { font-size: 12px; color: #444444; }
+
+    .o3-acc-header {
+      width: 100%; display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 20px; cursor: pointer; background: none;
+      border: none; border-bottom: 1px solid #eeeeee; transition: background 0.12s; text-align: left;
+    }
+    .o3-acc-header:hover { background: #fafafa; }
+    .o3-acc-title { font-size: 14px; font-weight: 700; }
+    .o3-acc-summary { font-size: 11px; color: #999999; margin-left: 12px; }
+    .o3-acc-meta { font-size: 10px; background: #f0f0f0; color: #666666; padding: 2px 6px; margin-right: 8px; }
+    .o3-acc-arrow { font-size: 14px; color: #bbbbbb; display: inline-block; transition: transform 0.2s; }
+    .o3-acc-header[aria-expanded="true"] .o3-acc-arrow { transform: rotate(90deg); color: #000000; }
+    .o3-acc-body { display: none; }
+    .o3-acc-body.open { display: block; }
+
+    /* INDENTED role items */
+    .o3-role-list { padding-left: 24px; border-left: 2px solid #eeeeee; margin: 4px 20px 8px 28px; }
+    .o3-role-header {
+      width: 100%; display: flex; justify-content: space-between; align-items: flex-start;
+      padding: 9px 0; cursor: pointer; background: none;
+      border: none; border-bottom: 1px solid #f5f5f5; transition: background 0.12s; text-align: left;
+    }
+    .o3-role-header:hover { background: #fafafa; }
+    .o3-role-title { font-size: 13px; font-weight: 600; color: #222222; }
+    .o3-role-company { font-size: 11px; color: #888888; margin-top: 1px; }
+    .o3-role-date { font-size: 11px; color: #cccccc; white-space: nowrap; }
+    .o3-role-arrow { font-size: 11px; color: #cccccc; margin-left: 6px; display: inline-block; transition: transform 0.2s; }
+    .o3-role-header[aria-expanded="true"] .o3-role-arrow { transform: rotate(90deg); color: #666666; }
+    .o3-role-detail { display: none; padding: 6px 0 10px 12px; border-left: 2px solid #f0f0f0; margin-left: 2px; }
+    .o3-role-detail.open { display: block; }
+    .o3-role-detail p { font-size: 12px; color: #555555; line-height: 1.6; }
+
+    /* ════════════════════════════════
+       OPTION 4: BACKGROUND TIERS
+       Section headers get gray band, items stay white
+       ════════════════════════════════ */
+    .o4-site-header { padding: 24px 20px 16px; border-bottom: 2px solid #000000; }
+    .o4-site-name { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .o4-site-role { font-size: 12px; color: #444444; }
+
+    .o4-acc-section { border-bottom: 1px solid #dddddd; }
+    .o4-acc-header {
+      width: 100%; display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 20px; cursor: pointer;
+      /* Gray band for section tier */
+      background: #f5f5f5;
+      border: none; transition: background 0.12s; text-align: left;
+    }
+    .o4-acc-header:hover { background: #eeeeee; }
+    .o4-acc-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .o4-acc-summary { font-size: 11px; color: #999999; margin-left: 12px; text-transform: none; letter-spacing: 0; }
+    .o4-acc-meta { font-size: 10px; background: #e0e0e0; color: #666666; padding: 2px 6px; margin-right: 8px; }
+    .o4-acc-arrow { font-size: 14px; color: #999999; display: inline-block; transition: transform 0.2s; }
+    .o4-acc-header[aria-expanded="true"] .o4-acc-arrow { transform: rotate(90deg); color: #333333; }
+    .o4-acc-body { display: none; background: #ffffff; }
+    .o4-acc-body.open { display: block; }
+
+    /* White role items */
+    .o4-role-header {
+      width: 100%; display: flex; justify-content: space-between; align-items: flex-start;
+      padding: 11px 20px; cursor: pointer; background: #ffffff;
+      border: none; border-bottom: 1px solid #f5f5f5; transition: background 0.12s; text-align: left;
+    }
+    .o4-role-header:hover { background: #fafafa; }
+    .o4-role-title { font-size: 13px; font-weight: 700; color: #111111; }
+    .o4-role-company { font-size: 11px; color: #888888; margin-top: 2px; }
+    .o4-role-date { font-size: 11px; color: #cccccc; white-space: nowrap; }
+    .o4-role-arrow { font-size: 11px; color: #cccccc; margin-left: 8px; display: inline-block; transition: transform 0.2s; }
+    .o4-role-header[aria-expanded="true"] .o4-role-arrow { transform: rotate(90deg); color: #666666; }
+    .o4-role-detail { display: none; padding: 8px 20px 14px 36px; border-left: 2px solid #eeeeee; margin: 0 20px; background: #ffffff; }
+    .o4-role-detail.open { display: block; }
+    .o4-role-detail p { font-size: 12px; color: #555555; line-height: 1.6; }
+
+    /* ── Summary Table ── */
+    .summary-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 20px; }
+    .summary-table th { text-align: left; padding: 8px 12px; border-bottom: 2px solid #000000; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #666666; }
+    .summary-table td { padding: 10px 12px; border-bottom: 1px solid #eeeeee; vertical-align: top; }
+    .summary-table tr:last-child td { border-bottom: none; }
+    .stars { color: #000000; letter-spacing: 1px; }
+    .empty-stars { color: #cccccc; }
+    .rec-badge { display: inline-block; background: #000000; color: #ffffff; font-size: 10px; font-weight: 700; padding: 1px 6px; margin-left: 6px; vertical-align: middle; }
+    .summary-rationale { font-size: 13px; color: #333333; line-height: 1.6; padding: 16px; background: #f9f9f9; border-left: 3px solid #000000; }
+
+    /* shared helpers */
+    .flex-between { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+    .flex-between-top { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
+    .role-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .acc-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+
+<!-- ── Title Bar ── -->
+<div class="title-bar">
+  <div><strong>Section Hierarchy</strong> — Personal Website</div>
+  <div class="rec">★ Recommended: Option 3</div>
+</div>
+
+<!-- ── Tabs ── -->
+<div class="tabs">
+  <button class="tab-btn active" data-panel="p1">1: Safe Option</button>
+  <button class="tab-btn" data-panel="p2">2: Size Contrast</button>
+  <button class="tab-btn" data-panel="p3">3: Indented Rows</button>
+  <button class="tab-btn" data-panel="p4">4: Background Tiers</button>
+  <button class="tab-btn" data-panel="psummary">Summary</button>
+</div>
+
+<!-- ════════════════════════════════════
+     PANEL 1: SAFE OPTION
+     ════════════════════════════════════ -->
+<div class="panel active" id="p1">
+  <div class="option-label">Option 1</div>
+  <div class="option-title">Safe Option</div>
+  <div class="option-desc">Minimal tweak: section headers get a slightly heavier weight and the arrow is scaled up — everything else stays identical to today's design.</div>
+
+  <div class="wireframe-box">
+    <!-- Header -->
+    <div class="o1-site-header">
+      <div class="o1-site-name">Shay O'Reilly</div>
+      <div class="o1-site-role">Principal Product Manager · Oakland, CA · <strong>Open to new roles</strong></div>
+    </div>
+
+    <!-- Work History Section -->
+    <div>
+      <button class="o1-acc-header" aria-expanded="true" aria-controls="o1-body-work">
+        <div style="display:flex;align-items:baseline;gap:10px;flex:1;min-width:0;">
+          <span class="o1-acc-title">Work History <span class="ann-marker">①</span></span>
+          <span class="o1-acc-summary">Career Break · Principal PM, Adobe · Senior Director, Cardlytics</span>
+        </div>
+        <div class="acc-right">
+          <span class="o1-acc-meta">5 roles · 17+ yrs</span>
+          <span class="o1-acc-arrow">›</span>
+        </div>
+      </button>
+      <div class="o1-acc-body open" id="o1-body-work">
+        <button class="o1-role-header" aria-expanded="false" aria-controls="o1-d1">
+          <div>
+            <div class="o1-role-title">Career Break <span class="ann-marker">②</span></div>
+            <div class="o1-role-company">Intentional pause · social impact focus</div>
+          </div>
+          <div class="role-right">
+            <span class="o1-role-date">Sep 2025 — Present</span>
+            <span class="o1-role-arrow">›</span>
+          </div>
+        </button>
+        <div class="o1-role-detail" id="o1-d1">
+          <p>Intentional career pause focused on renewal and identifying opportunities to apply product expertise toward positive social impact.</p>
+        </div>
+        <button class="o1-role-header" aria-expanded="false" aria-controls="o1-d2">
+          <div>
+            <div class="o1-role-title">Principal Product Manager, Data Collection</div>
+            <div class="o1-role-company">Adobe, Analytics · Oakland, CA</div>
+          </div>
+          <div class="role-right">
+            <span class="o1-role-date">Sep 2020 — Sep 2025</span>
+            <span class="o1-role-arrow">›</span>
+          </div>
+        </button>
+        <div class="o1-role-detail" id="o1-d2">
+          <p>Owned strategy and execution for mission-critical data products used by large organizations to make operational and policy decisions.</p>
+        </div>
+        <button class="o1-role-header" aria-expanded="false" aria-controls="o1-d3">
+          <div>
+            <div class="o1-role-title">Senior Product Manager, Attribution &amp; Reporting</div>
+            <div class="o1-role-company">Adobe, Advertising Cloud · Emeryville, CA</div>
+          </div>
+          <div class="role-right">
+            <span class="o1-role-date">Dec 2017 — Sep 2020</span>
+            <span class="o1-role-arrow">›</span>
+          </div>
+        </button>
+        <div class="o1-role-detail" id="o1-d3">
+          <p>Responsible for all products related to attribution, measurement, and reporting on Advertising Cloud's Display unit.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Projects Section -->
+    <div>
+      <button class="o1-acc-header" aria-expanded="false" aria-controls="o1-body-proj">
+        <div style="display:flex;align-items:baseline;gap:10px;flex:1;min-width:0;">
+          <span class="o1-acc-title">Projects</span>
+          <span class="o1-acc-summary">AI Medicare Advice Evaluation</span>
+        </div>
+        <div class="acc-right">
+          <span class="o1-acc-meta">1 featured</span>
+          <span class="o1-acc-arrow">›</span>
+        </div>
+      </button>
+      <div class="o1-acc-body" id="o1-body-proj"></div>
+    </div>
+
+    <!-- About Section -->
+    <div>
+      <button class="o1-acc-header" aria-expanded="false" aria-controls="o1-body-about">
+        <div style="display:flex;align-items:baseline;gap:10px;flex:1;min-width:0;">
+          <span class="o1-acc-title">About</span>
+          <span class="o1-acc-summary">Product Strategy · Data &amp; Analytics · Stakeholder Management</span>
+        </div>
+        <div class="acc-right">
+          <span class="o1-acc-arrow">›</span>
+        </div>
+      </button>
+      <div class="o1-acc-body" id="o1-body-about"></div>
+    </div>
+  </div>
+
+  <div class="annotations">
+    <div class="annotation"><span class="ann-num">①</span><span>Section headers are <em>identical</em> in size (14px, 700 weight) to today's live site — the only change is keeping this as the safe baseline with no modifications.</span></div>
+    <div class="annotation"><span class="ann-num">②</span><span>Role item headers look visually equivalent to section headers — this is the problem being solved. Hierarchy is unclear at a glance.</span></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     PANEL 2: SIZE CONTRAST
+     ════════════════════════════════════ -->
+<div class="panel" id="p2">
+  <div class="option-label">Option 2</div>
+  <div class="option-title">Size Contrast</div>
+  <div class="option-desc">Section headers jump to 17px bold, role items drop to 12px — a sharp typographic size gap signals two distinct levels at a glance.</div>
+
+  <div class="wireframe-box">
+    <div class="o2-site-header">
+      <div class="o2-site-name">Shay O'Reilly</div>
+      <div class="o2-site-role">Principal Product Manager · Oakland, CA · <strong>Open to new roles</strong></div>
+    </div>
+
+    <div>
+      <button class="o2-acc-header" aria-expanded="true" aria-controls="o2-body-work">
+        <div style="display:flex;align-items:baseline;gap:10px;flex:1;min-width:0;">
+          <span class="o2-acc-title">Work History <span class="ann-marker">①</span></span>
+          <span class="o2-acc-summary">Career Break · Principal PM, Adobe · Senior Director, Cardlytics</span>
+        </div>
+        <div class="acc-right">
+          <span class="o2-acc-meta">5 roles · 17+ yrs</span>
+          <span class="o2-acc-arrow">›</span>
+        </div>
+      </button>
+      <div class="o2-acc-body open" id="o2-body-work">
+        <button class="o2-role-header" aria-expanded="false" aria-controls="o2-d1">
+          <div>
+            <div class="o2-role-title">Career Break <span class="ann-marker">②</span></div>
+            <div class="o2-role-company">Intentional pause · social impact focus</div>
+          </div>
+          <div class="role-right">
+            <span class="o2-role-date">Sep 2025 — Present</span>
+            <span class="o2-role-arrow">›</span>
+          </div>
+        </button>
+        <div class="o2-role-detail" id="o2-d1">
+          <p>Intentional career pause focused on renewal and identifying opportunities to apply product expertise toward positive social impact.</p>
+        </div>
+        <button class="o2-role-header" aria-expanded="false" aria-controls="o2-d2">
+          <div>
+            <div class="o2-role-title">Principal Product Manager, Data Collection</div>
+            <div class="o2-role-company">Adobe, Analytics · Oakland, CA</div>
+          </div>
+          <div class="role-right">
+            <span class="o2-role-date">Sep 2020 — Sep 2025</span>
+            <span class="o2-role-arrow">›</span>
+          </div>
+        </button>
+        <div class="o2-role-detail" id="o2-d2">
+          <p>Owned strategy and execution for mission-critical data products used by large organizations to make operational and policy decisions.</p>
+        </div>
+        <button class="o2-role-header" aria-expanded="false" aria-controls="o2-d3">
+          <div>
+            <div class="o2-role-title">Senior Product Manager, Attribution &amp; Reporting</div>
+            <div class="o2-role-company">Adobe, Advertising Cloud · Emeryville, CA</div>
+          </div>
+          <div class="role-right">
+            <span class="o2-role-date">Dec 2017 — Sep 2020</span>
+            <span class="o2-role-arrow">›</span>
+          </div>
+        </button>
+        <div class="o2-role-detail" id="o2-d3">
+          <p>Responsible for all products related to attribution, measurement, and reporting on Advertising Cloud's Display unit.</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <button class="o2-acc-header" aria-expanded="false" aria-controls="o2-body-proj">
+        <div style="display:flex;align-items:baseline;gap:10px;flex:1;min-width:0;">
+          <span class="o2-acc-title">Projects</span>
+          <span class="o2-acc-summary">AI Medicare Advice Evaluation</span>
+        </div>
+        <div class="acc-right">
+          <span class="o2-acc-meta">1 featured</span>
+          <span class="o2-acc-arrow">›</span>
+        </div>
+      </button>
+      <div class="o2-acc-body" id="o2-body-proj"></div>
+    </div>
+
+    <div>
+      <button class="o2-acc-header" aria-expanded="false" aria-controls="o2-body-about">
+        <div style="display:flex;align-items:baseline;gap:10px;flex:1;min-width:0;">
+          <span class="o2-acc-title">About</span>
+          <span class="o2-acc-summary">Product Strategy · Data &amp; Analytics</span>
+        </div>
+        <div class="acc-right">
+          <span class="o2-acc-arrow">›</span>
+        </div>
+      </button>
+      <div class="o2-acc-body" id="o2-body-about"></div>
+    </div>
+  </div>
+
+  <div class="annotations">
+    <div class="annotation"><span class="ann-num">①</span><span>Section label at 17px / 800 weight. Clearly a "heading" — employer scanning the page instantly reads it as a category, not a content item.</span></div>
+    <div class="annotation"><span class="ann-num">②</span><span>Role items at 12px / 600 weight — clearly subordinate. The size gap (~5px) is enough to feel like an H2/H3 relationship. Risk: role titles may feel slightly small on mobile.</span></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     PANEL 3: INDENTED ROWS
+     ════════════════════════════════════ -->
+<div class="panel" id="p3">
+  <div class="option-label">Option 3</div>
+  <div class="option-title">Indented Rows</div>
+  <div class="option-desc">Role items are indented under a connecting vertical line, making the parent-child relationship structural and instantly recognizable.</div>
+
+  <div class="wireframe-box">
+    <div class="o3-site-header">
+      <div class="o3-site-name">Shay O'Reilly</div>
+      <div class="o3-site-role">Principal Product Manager · Oakland, CA · <strong>Open to new roles</strong></div>
+    </div>
+
+    <div>
+      <button class="o3-acc-header" aria-expanded="true" aria-controls="o3-body-work">
+        <div style="display:flex;align-items:baseline;gap:10px;flex:1;min-width:0;">
+          <span style="font-size:14px;font-weight:700;">Work History <span class="ann-marker">①</span></span>
+          <span style="font-size:11px;color:#999999;">Career Break · Principal PM, Adobe · Senior Director, Cardlytics</span>
+        </div>
+        <div class="acc-right">
+          <span class="o3-acc-meta">5 roles · 17+ yrs</span>
+          <span class="o3-acc-arrow">›</span>
+        </div>
+      </button>
+      <div class="o3-acc-body open" id="o3-body-work">
+        <ul class="o3-role-list">
+          <li>
+            <button class="o3-role-header" aria-expanded="false" aria-controls="o3-d1" style="width:100%;">
+              <div>
+                <div class="o3-role-title">Career Break <span class="ann-marker">②</span></div>
+                <div class="o3-role-company">Intentional pause · social impact focus</div>
+              </div>
+              <div class="role-right">
+                <span class="o3-role-date">Sep 2025 — Present</span>
+                <span class="o3-role-arrow">›</span>
+              </div>
+            </button>
+            <div class="o3-role-detail" id="o3-d1">
+              <p>Intentional career pause focused on renewal and identifying opportunities to apply product expertise toward positive social impact.</p>
+            </div>
+          </li>
+          <li>
+            <button class="o3-role-header" aria-expanded="true" aria-controls="o3-d2" style="width:100%;">
+              <div>
+                <div class="o3-role-title">Principal Product Manager, Data Collection</div>
+                <div class="o3-role-company">Adobe, Analytics · Oakland, CA</div>
+              </div>
+              <div class="role-right">
+                <span class="o3-role-date">Sep 2020 — Sep 2025</span>
+                <span class="o3-role-arrow" style="transform:rotate(90deg);color:#666666;">›</span>
+              </div>
+            </button>
+            <div class="o3-role-detail open" id="o3-d2">
+              <p>Owned strategy and execution for mission-critical data products used by large organizations to make operational and policy decisions.</p>
+            </div>
+          </li>
+          <li>
+            <button class="o3-role-header" aria-expanded="false" aria-controls="o3-d3" style="width:100%;">
+              <div>
+                <div class="o3-role-title">Senior Product Manager, Attribution &amp; Reporting</div>
+                <div class="o3-role-company">Adobe, Advertising Cloud · Emeryville, CA</div>
+              </div>
+              <div class="role-right">
+                <span class="o3-role-date">Dec 2017 — Sep 2020</span>
+                <span class="o3-role-arrow">›</span>
+              </div>
+            </button>
+            <div class="o3-role-detail" id="o3-d3">
+              <p>Responsible for all products related to attribution, measurement, and reporting on Advertising Cloud's Display unit.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div>
+      <button class="o3-acc-header" aria-expanded="true" aria-controls="o3-body-proj">
+        <div style="display:flex;align-items:baseline;gap:10px;flex:1;min-width:0;">
+          <span style="font-size:14px;font-weight:700;">Projects</span>
+          <span style="font-size:11px;color:#999999;">AI Medicare Advice Evaluation</span>
+        </div>
+        <div class="acc-right">
+          <span class="o3-acc-meta">1 featured</span>
+          <span class="o3-acc-arrow">›</span>
+        </div>
+      </button>
+      <div class="o3-acc-body open" id="o3-body-proj">
+        <ul class="o3-role-list">
+          <li>
+            <button class="o3-role-header" aria-expanded="false" aria-controls="o3-dp1" style="width:100%;">
+              <div>
+                <div class="o3-role-title">AI Medicare Advice Evaluation</div>
+                <div class="o3-role-company">Research tool · evaluating AI accuracy on high-stakes health guidance</div>
+              </div>
+              <div class="role-right">
+                <span class="o3-role-date">2025</span>
+                <span class="o3-role-arrow">›</span>
+              </div>
+            </button>
+            <div class="o3-role-detail" id="o3-dp1">
+              <p>Built an evaluation pipeline to assess how accurately AI models answer Medicare questions.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div>
+      <button class="o3-acc-header" aria-expanded="false" aria-controls="o3-body-about">
+        <div style="display:flex;align-items:baseline;gap:10px;flex:1;min-width:0;">
+          <span style="font-size:14px;font-weight:700;">About</span>
+          <span style="font-size:11px;color:#999999;">Product Strategy · Data &amp; Analytics</span>
+        </div>
+        <div class="acc-right">
+          <span class="o3-acc-arrow">›</span>
+        </div>
+      </button>
+      <div class="o3-acc-body" id="o3-body-about"></div>
+    </div>
+  </div>
+
+  <div class="annotations">
+    <div class="annotation"><span class="ann-num">①</span><span>Section header sits at full page width — unchanged, familiar. The indentation below it creates hierarchy without changing the section row at all.</span></div>
+    <div class="annotation"><span class="ann-num">②</span><span>Role items indented ~24px with a left border connector — a classic tree/outline metaphor. Immediately signals "these items live inside Work History." No cognitive effort required.</span></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     PANEL 4: BACKGROUND TIERS
+     ════════════════════════════════════ -->
+<div class="panel" id="p4">
+  <div class="option-label">Option 4</div>
+  <div class="option-title">Background Tiers</div>
+  <div class="option-desc">Section headers sit on a gray band, role items on white — color contrast alone signals two visual tiers, no structural changes needed.</div>
+
+  <div class="wireframe-box">
+    <div class="o4-site-header">
+      <div class="o4-site-name">Shay O'Reilly</div>
+      <div class="o4-site-role">Principal Product Manager · Oakland, CA · <strong>Open to new roles</strong></div>
+    </div>
+
+    <div class="o4-acc-section">
+      <button class="o4-acc-header" aria-expanded="true" aria-controls="o4-body-work">
+        <div style="display:flex;align-items:baseline;gap:10px;flex:1;min-width:0;">
+          <span class="o4-acc-title">Work History <span class="ann-marker">①</span></span>
+          <span class="o4-acc-summary">Career Break · Principal PM, Adobe</span>
+        </div>
+        <div class="acc-right">
+          <span class="o4-acc-meta">5 roles · 17+ yrs</span>
+          <span class="o4-acc-arrow">›</span>
+        </div>
+      </button>
+      <div class="o4-acc-body open" id="o4-body-work">
+        <button class="o4-role-header" aria-expanded="false" aria-controls="o4-d1">
+          <div>
+            <div class="o4-role-title">Career Break <span class="ann-marker">②</span></div>
+            <div class="o4-role-company">Intentional pause · social impact focus</div>
+          </div>
+          <div class="role-right">
+            <span class="o4-role-date">Sep 2025 — Present</span>
+            <span class="o4-role-arrow">›</span>
+          </div>
+        </button>
+        <div class="o4-role-detail" id="o4-d1">
+          <p>Intentional career pause focused on renewal and identifying opportunities to apply product expertise.</p>
+        </div>
+        <button class="o4-role-header" aria-expanded="false" aria-controls="o4-d2">
+          <div>
+            <div class="o4-role-title">Principal Product Manager, Data Collection</div>
+            <div class="o4-role-company">Adobe, Analytics · Oakland, CA</div>
+          </div>
+          <div class="role-right">
+            <span class="o4-role-date">Sep 2020 — Sep 2025</span>
+            <span class="o4-role-arrow">›</span>
+          </div>
+        </button>
+        <div class="o4-role-detail" id="o4-d2">
+          <p>Owned strategy and execution for mission-critical data products used by large organizations.</p>
+        </div>
+        <button class="o4-role-header" aria-expanded="false" aria-controls="o4-d3">
+          <div>
+            <div class="o4-role-title">Senior Product Manager, Attribution &amp; Reporting</div>
+            <div class="o4-role-company">Adobe, Advertising Cloud · Emeryville, CA</div>
+          </div>
+          <div class="role-right">
+            <span class="o4-role-date">Dec 2017 — Sep 2020</span>
+            <span class="o4-role-arrow">›</span>
+          </div>
+        </button>
+        <div class="o4-role-detail" id="o4-d3">
+          <p>Responsible for all products related to attribution, measurement, and reporting on Advertising Cloud's Display unit.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="o4-acc-section">
+      <button class="o4-acc-header" aria-expanded="false" aria-controls="o4-body-proj">
+        <div style="display:flex;align-items:baseline;gap:10px;flex:1;min-width:0;">
+          <span class="o4-acc-title">Projects</span>
+          <span class="o4-acc-summary">AI Medicare Advice Evaluation</span>
+        </div>
+        <div class="acc-right">
+          <span class="o4-acc-meta">1 featured</span>
+          <span class="o4-acc-arrow">›</span>
+        </div>
+      </button>
+      <div class="o4-acc-body" id="o4-body-proj"></div>
+    </div>
+
+    <div class="o4-acc-section">
+      <button class="o4-acc-header" aria-expanded="false" aria-controls="o4-body-about">
+        <div style="display:flex;align-items:baseline;gap:10px;flex:1;min-width:0;">
+          <span class="o4-acc-title">About</span>
+          <span class="o4-acc-summary">Product Strategy · Data &amp; Analytics</span>
+        </div>
+        <div class="acc-right">
+          <span class="o4-acc-arrow">›</span>
+        </div>
+      </button>
+      <div class="o4-acc-body" id="o4-body-about"></div>
+    </div>
+  </div>
+
+  <div class="annotations">
+    <div class="annotation"><span class="ann-num">①</span><span>Gray (#f5f5f5) band on section headers with UPPERCASE small-caps treatment — a strong "category label" signal. Works without changing the structure at all.</span></div>
+    <div class="annotation"><span class="ann-num">②</span><span>White background role items feel like content within the gray-banded category. The background shift alone creates hierarchy. Risk: uppercase section labels can feel formal; test against the site's "wit" aesthetic.</span></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     PANEL: SUMMARY
+     ════════════════════════════════════ -->
+<div class="panel" id="psummary">
+  <div class="option-label">Summary</div>
+  <div class="option-title">Comparison</div>
+  <div class="option-desc">All four options solve the same problem — none require JavaScript changes, only CSS tweaks.</div>
+
+  <table class="summary-table">
+    <thead>
+      <tr>
+        <th>Option</th>
+        <th>Approach</th>
+        <th>Hierarchy Clarity</th>
+        <th>Design Risk</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1: Safe Option</strong></td>
+        <td>No change — status quo baseline</td>
+        <td><span class="stars">★★</span><span class="empty-stars">★★★</span></td>
+        <td><span class="stars">★</span><span class="empty-stars">★★★★</span></td>
+      </tr>
+      <tr>
+        <td><strong>2: Size Contrast</strong></td>
+        <td>Large section title (17px), smaller role title (12px)</td>
+        <td><span class="stars">★★★★</span><span class="empty-stars">★</span></td>
+        <td><span class="stars">★★</span><span class="empty-stars">★★★</span></td>
+      </tr>
+      <tr>
+        <td><strong>3: Indented Rows</strong> <span class="rec-badge">★ REC</span></td>
+        <td>Role items indented with vertical connector line</td>
+        <td><span class="stars">★★★★★</span></td>
+        <td><span class="stars">★★</span><span class="empty-stars">★★★</span></td>
+      </tr>
+      <tr>
+        <td><strong>4: Background Tiers</strong></td>
+        <td>Gray band on sections, white on role items</td>
+        <td><span class="stars">★★★★</span><span class="empty-stars">★</span></td>
+        <td><span class="stars">★★★</span><span class="empty-stars">★★</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="summary-rationale">
+    <strong>Recommended: Option 3 (Indented Rows)</strong><br><br>
+    Indentation is the clearest structural metaphor for parent-child hierarchy — it's how file trees, outlines, and legal documents have worked for decades. It requires no change to section or role header styling (so the existing design language is preserved), and the connecting border-left line doubles as a visual affordance for the current section's contents. Options 2 and 4 also work well; Option 2 is a strong runner-up if you prefer to keep items full-width, since the size gap alone creates clear H2/H3 differentiation.
+  </div>
+</div>
+
+<script>
+  // Tab switching
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.panel).classList.add('active');
+    });
+  });
+
+  // Option 1 accordions
+  document.querySelectorAll('.o1-acc-header').forEach(h => {
+    h.addEventListener('click', () => {
+      const open = h.getAttribute('aria-expanded') === 'true';
+      h.setAttribute('aria-expanded', String(!open));
+      document.getElementById(h.getAttribute('aria-controls')).classList.toggle('open', !open);
+    });
+  });
+  document.querySelectorAll('.o1-role-header').forEach(h => {
+    h.addEventListener('click', () => {
+      const open = h.getAttribute('aria-expanded') === 'true';
+      h.setAttribute('aria-expanded', String(!open));
+      document.getElementById(h.getAttribute('aria-controls')).classList.toggle('open', !open);
+    });
+  });
+
+  // Option 2 accordions
+  document.querySelectorAll('.o2-acc-header').forEach(h => {
+    h.addEventListener('click', () => {
+      const open = h.getAttribute('aria-expanded') === 'true';
+      h.setAttribute('aria-expanded', String(!open));
+      document.getElementById(h.getAttribute('aria-controls')).classList.toggle('open', !open);
+    });
+  });
+  document.querySelectorAll('.o2-role-header').forEach(h => {
+    h.addEventListener('click', () => {
+      const open = h.getAttribute('aria-expanded') === 'true';
+      h.setAttribute('aria-expanded', String(!open));
+      document.getElementById(h.getAttribute('aria-controls')).classList.toggle('open', !open);
+    });
+  });
+
+  // Option 3 accordions
+  document.querySelectorAll('.o3-acc-header').forEach(h => {
+    h.addEventListener('click', () => {
+      const open = h.getAttribute('aria-expanded') === 'true';
+      h.setAttribute('aria-expanded', String(!open));
+      document.getElementById(h.getAttribute('aria-controls')).classList.toggle('open', !open);
+    });
+  });
+  document.querySelectorAll('.o3-role-header').forEach(h => {
+    h.addEventListener('click', () => {
+      const open = h.getAttribute('aria-expanded') === 'true';
+      h.setAttribute('aria-expanded', String(!open));
+      document.getElementById(h.getAttribute('aria-controls')).classList.toggle('open', !open);
+    });
+  });
+
+  // Option 4 accordions
+  document.querySelectorAll('.o4-acc-header').forEach(h => {
+    h.addEventListener('click', () => {
+      const open = h.getAttribute('aria-expanded') === 'true';
+      h.setAttribute('aria-expanded', String(!open));
+      document.getElementById(h.getAttribute('aria-controls')).classList.toggle('open', !open);
+    });
+  });
+  document.querySelectorAll('.o4-role-header').forEach(h => {
+    h.addEventListener('click', () => {
+      const open = h.getAttribute('aria-expanded') === 'true';
+      h.setAttribute('aria-expanded', String(!open));
+      document.getElementById(h.getAttribute('aria-controls')).classList.toggle('open', !open);
+    });
+  });
+</script>
+</body>
+</html>

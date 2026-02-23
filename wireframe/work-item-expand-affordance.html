@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Work Item Expand Affordance — Shay O'Reilly</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #fff; color: #000; font-size: 14px; line-height: 1.5; }
+
+    /* ── Title Bar ── */
+    .title-bar {
+      background: #000; color: #fff;
+      padding: 11px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+      position: sticky; top: 0; z-index: 200;
+    }
+    .title-bar h1 { font-size: 13px; font-weight: 600; letter-spacing: 0.03em; }
+    .rec-badge { font-size: 11px; background: #fff; color: #000; padding: 4px 10px; font-weight: 700; white-space: nowrap; }
+
+    /* ── Tab Nav ── */
+    .tab-nav {
+      border-bottom: 2px solid #000;
+      display: flex; background: #fff;
+      position: sticky; top: 39px; z-index: 199;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      padding: 9px 18px; border: none; background: none; cursor: pointer;
+      font-size: 12px; font-weight: 600; color: #666;
+      border-bottom: 3px solid transparent; margin-bottom: -2px;
+      font-family: inherit; white-space: nowrap; letter-spacing: 0.02em;
+    }
+    .tab-btn:hover { color: #000; }
+    .tab-btn.active { color: #000; border-bottom-color: #000; }
+
+    /* ── Option Panels ── */
+    .option-panel { display: none; }
+    .option-panel.active { display: block; }
+    .option-header { padding: 28px 40px 0; }
+    .option-title { font-size: 18px; font-weight: 700; margin-bottom: 3px; }
+    .option-tagline { font-size: 12px; color: #666; margin-bottom: 20px; }
+    .wireframe-wrap { margin: 0 40px 0; border: 2px solid #000; }
+
+    /* ── Annotations ── */
+    .ann { display: inline-block; width: 17px; height: 17px; background: #000; color: #fff; border-radius: 50%; font-size: 9px; font-weight: 700; line-height: 17px; text-align: center; vertical-align: middle; margin-left: 3px; cursor: default; }
+    .annotations { margin: 20px 40px 0; padding-bottom: 40px; }
+    .ann-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 7px; }
+    .ann-num { flex-shrink: 0; width: 17px; height: 17px; background: #000; color: #fff; border-radius: 50%; font-size: 9px; font-weight: 700; line-height: 17px; text-align: center; }
+    .ann-text { font-size: 12px; color: #333; }
+
+    /* ════════════════════════════════
+       SHARED WIREFRAME COMPONENTS
+       ════════════════════════════════ */
+
+    /* Section-level accordion (shared across all options) */
+    .wf-section-acc {
+      border-bottom: 1px solid #eee;
+    }
+    .wf-section-hd {
+      width: 100%; display: flex; justify-content: space-between; align-items: center;
+      gap: 16px; padding: 20px 24px; background: none; border: none; text-align: left;
+      cursor: pointer; font-family: inherit;
+    }
+    .wf-section-hd:hover { background: #fafafa; }
+    .wf-section-left { display: flex; align-items: baseline; gap: 14px; flex: 1; min-width: 0; }
+    .wf-section-title { font-size: 1rem; font-weight: 700; white-space: nowrap; }
+    .wf-section-summary { font-size: 0.8125rem; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .wf-section-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .wf-section-meta { font-size: 0.75rem; background: #f0f0f0; color: #666; padding: 3px 8px; white-space: nowrap; }
+    .wf-section-arrow {
+      font-size: 1.25rem; color: #bbb; line-height: 1; transition: transform 0.2s ease;
+      display: inline-block; width: 18px; text-align: center;
+    }
+    .wf-section-hd[aria-expanded="true"] .wf-section-arrow { transform: rotate(90deg); color: #111; }
+    .wf-section-body { display: none; }
+    .wf-section-body.open { display: block; }
+
+    /* Role list container */
+    .wf-role-list { border-top: 1px solid #f0f0f0; }
+    .wf-role-item { border-bottom: 1px solid #f0f0f0; }
+    .wf-role-item:last-child { border-bottom: none; }
+
+    /* Role detail (shared) */
+    .wf-role-detail { display: none; padding: 4px 24px 18px 40px; border-left: 2px solid #eee; margin-left: 25px; }
+    .wf-role-detail.open { display: block; }
+    .wf-role-detail p { font-size: 0.875rem; color: #444; line-height: 1.7; margin-bottom: 10px; }
+    .wf-role-detail ul { list-style: none; }
+    .wf-role-detail ul li { font-size: 0.8125rem; color: #555; padding-left: 16px; position: relative; margin-bottom: 5px; line-height: 1.55; }
+    .wf-role-detail ul li::before { content: '—'; position: absolute; left: 0; color: #ccc; }
+
+    /* ── Summary table ── */
+    .summary-wrap { margin: 0 40px 40px; }
+    .summary-wrap h2 { font-size: 18px; font-weight: 700; margin: 28px 0 16px; }
+    .score-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .score-table th { text-align: left; padding: 8px 12px; border-bottom: 2px solid #000; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; }
+    .score-table td { padding: 10px 12px; border-bottom: 1px solid #eee; vertical-align: top; }
+    .score-table tr.rec-row td { background: #f7f7f7; font-weight: 600; }
+    .stars { letter-spacing: 1px; color: #000; font-size: 11px; }
+    .rec-block { margin-top: 20px; padding: 14px 16px; border-left: 3px solid #000; background: #f7f7f7; font-size: 13px; line-height: 1.6; }
+
+    /* ════════════════════════════════
+       OPTION 1 — Matching Chevron
+       ════════════════════════════════ */
+    .o1-role-hd {
+      width: 100%; display: flex; justify-content: space-between; align-items: flex-start;
+      gap: 16px; padding: 14px 24px; background: none; border: none; text-align: left;
+      cursor: pointer; font-family: inherit; transition: background 0.12s;
+    }
+    .o1-role-hd:hover { background: #fafafa; }
+    .o1-role-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+    .o1-role-title { font-size: 0.9375rem; font-weight: 700; color: #111; }
+    .o1-role-company { font-size: 0.8125rem; color: #777; }
+    .o1-role-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; padding-top: 2px; }
+    .o1-role-date { font-size: 0.75rem; color: #bbb; white-space: nowrap; }
+    .o1-role-arrow {
+      font-size: 1rem; color: #ccc; line-height: 1; transition: transform 0.2s ease;
+      display: inline-block; width: 16px; text-align: center;
+    }
+    .o1-role-hd[aria-expanded="true"] .o1-role-arrow { transform: rotate(90deg); color: #666; }
+    .o1-role-hd[aria-expanded="true"] .o1-role-title { text-decoration: underline; text-underline-offset: 2px; }
+
+    /* ════════════════════════════════
+       OPTION 2 — Left Indicator
+       ════════════════════════════════ */
+    .o2-role-hd {
+      width: 100%; display: flex; align-items: flex-start;
+      gap: 0; padding: 14px 24px 14px 0; background: none; border: none; text-align: left;
+      cursor: pointer; font-family: inherit; transition: background 0.12s;
+    }
+    .o2-role-hd:hover { background: #fafafa; }
+    .o2-left-indicator {
+      width: 24px; flex-shrink: 0; display: flex; align-items: flex-start;
+      justify-content: center; padding-top: 3px; padding-left: 24px;
+    }
+    .o2-indicator-icon {
+      font-size: 0.625rem; color: #ccc; transition: transform 0.2s ease, color 0.15s;
+      display: inline-block; line-height: 1;
+    }
+    .o2-role-hd[aria-expanded="true"] .o2-indicator-icon { transform: rotate(90deg); color: #555; }
+    .o2-role-body { flex: 1; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; min-width: 0; }
+    .o2-role-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .o2-role-title { font-size: 0.9375rem; font-weight: 700; color: #111; }
+    .o2-role-hd[aria-expanded="true"] .o2-role-title { text-decoration: underline; text-underline-offset: 2px; }
+    .o2-role-company { font-size: 0.8125rem; color: #777; }
+    .o2-role-date { font-size: 0.75rem; color: #bbb; white-space: nowrap; padding-top: 2px; flex-shrink: 0; }
+
+    /* ════════════════════════════════
+       OPTION 3 — Expand Tag
+       ════════════════════════════════ */
+    .o3-role-hd {
+      width: 100%; display: flex; justify-content: space-between; align-items: flex-start;
+      gap: 16px; padding: 14px 24px; background: none; border: none; text-align: left;
+      cursor: pointer; font-family: inherit; transition: background 0.12s;
+    }
+    .o3-role-hd:hover { background: #fafafa; }
+    .o3-role-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+    .o3-role-title { font-size: 0.9375rem; font-weight: 700; color: #111; }
+    .o3-role-company { font-size: 0.8125rem; color: #777; }
+    .o3-role-right { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; flex-shrink: 0; }
+    .o3-role-date { font-size: 0.75rem; color: #bbb; white-space: nowrap; }
+    .o3-expand-tag {
+      font-size: 0.6875rem; color: #999; border: 1px solid #ddd; padding: 2px 7px;
+      white-space: nowrap; letter-spacing: 0.02em; transition: color 0.15s, border-color 0.15s;
+    }
+    .o3-role-hd:hover .o3-expand-tag { color: #333; border-color: #999; }
+    .o3-role-hd[aria-expanded="true"] .o3-expand-tag {
+      background: #111; color: #fff; border-color: #111;
+    }
+    .o3-expanded-label { display: none; }
+    .o3-collapsed-label { display: inline; }
+    .o3-role-hd[aria-expanded="true"] .o3-expanded-label { display: inline; }
+    .o3-role-hd[aria-expanded="true"] .o3-collapsed-label { display: none; }
+
+    /* ════════════════════════════════
+       OPTION 4 — Hover Reveal
+       ════════════════════════════════ */
+    .o4-role-item { border-bottom: 1px solid #f0f0f0; position: relative; }
+    .o4-role-item:last-child { border-bottom: none; }
+    .o4-role-hd {
+      width: 100%; display: flex; justify-content: space-between; align-items: flex-start;
+      gap: 16px; padding: 14px 24px; background: none; border: none; text-align: left;
+      cursor: pointer; font-family: inherit; transition: background 0.12s;
+    }
+    .o4-role-hd:hover { background: #fafafa; }
+    .o4-role-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+    .o4-role-title { font-size: 0.9375rem; font-weight: 700; color: #111; }
+    .o4-role-company { font-size: 0.8125rem; color: #777; }
+    .o4-role-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; padding-top: 2px; }
+    .o4-role-date { font-size: 0.75rem; color: #bbb; white-space: nowrap; }
+    .o4-hover-hint {
+      font-size: 0.6875rem; color: #bbb; white-space: nowrap; opacity: 0;
+      transition: opacity 0.15s; letter-spacing: 0.02em;
+    }
+    .o4-role-item:hover .o4-hover-hint { opacity: 1; }
+    .o4-role-hd[aria-expanded="true"] .o4-hover-hint { opacity: 1; color: #555; }
+    .o4-role-hd[aria-expanded="true"] .o4-role-title { text-decoration: underline; text-underline-offset: 2px; }
+
+    /* Note label on wireframe */
+    .hover-note {
+      text-align: center; font-size: 11px; color: #999; padding: 8px;
+      border-top: 1px dashed #ddd; background: #fafafa;
+      font-style: italic;
+    }
+
+    @media (max-width: 600px) {
+      .option-header { padding: 20px 16px 0; }
+      .wireframe-wrap { margin: 0 16px 0; }
+      .annotations { margin: 16px 16px 0; }
+      .summary-wrap { margin: 0 16px 40px; }
+      .wf-section-summary { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ TITLE BAR ═══ -->
+<div class="title-bar">
+  <h1>Work Item Expand Affordance — Shay O'Reilly</h1>
+  <span class="rec-badge">★ Recommended: Option 1</span>
+</div>
+
+<!-- ═══ TAB NAV ═══ -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="showTab('opt1')">1: Safe Option</button>
+  <button class="tab-btn" onclick="showTab('opt2')">2: Left Indicator</button>
+  <button class="tab-btn" onclick="showTab('opt3')">3: Expand Tag</button>
+  <button class="tab-btn" onclick="showTab('opt4')">4: Hover Reveal</button>
+  <button class="tab-btn" onclick="showTab('summary')">Summary</button>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     OPTION 1 — Safe Option (Matching Chevron)
+     ══════════════════════════════════════════════════════ -->
+<div id="opt1" class="option-panel active">
+  <div class="option-header">
+    <div class="option-title">Option 1: Safe Option</div>
+    <div class="option-tagline">Add a matching › chevron to role rows — same pattern as section headers, slightly lighter to signal hierarchy.</div>
+  </div>
+
+  <div class="wireframe-wrap">
+    <!-- Section accordion (open) -->
+    <div class="wf-section-acc">
+      <button class="wf-section-hd" aria-expanded="true" onclick="toggleSection(this,'o1-section-body')">
+        <div class="wf-section-left">
+          <span class="wf-section-title">Work History</span>
+          <span class="wf-section-summary">Career Break &middot; Principal PM, Adobe &middot; Senior Director, Cardlytics</span>
+        </div>
+        <div class="wf-section-right">
+          <span class="wf-section-meta">5 roles &middot; 17+ yrs</span>
+          <span class="wf-section-arrow">›</span>
+        </div>
+      </button>
+
+      <div class="wf-section-body open" id="o1-section-body">
+        <div class="wf-role-list">
+
+          <!-- Career Break -->
+          <div class="wf-role-item">
+            <button class="o1-role-hd" aria-expanded="false" onclick="toggleRole(this,'o1-d1')" aria-controls="o1-d1">
+              <div class="o1-role-info">
+                <span class="o1-role-title">Career Break <span class="ann">①</span></span>
+                <span class="o1-role-company">Intentional pause &middot; social impact focus</span>
+              </div>
+              <div class="o1-role-right">
+                <span class="o1-role-date">Sep 2025 — Present</span>
+                <span class="o1-role-arrow">›</span>
+              </div>
+            </button>
+            <div class="wf-role-detail" id="o1-d1">
+              <p>Intentional career pause focused on renewal and identifying opportunities to apply product and data expertise toward positive social impact.</p>
+            </div>
+          </div>
+
+          <!-- Adobe Analytics -->
+          <div class="wf-role-item">
+            <button class="o1-role-hd" aria-expanded="true" onclick="toggleRole(this,'o1-d2')" aria-controls="o1-d2">
+              <div class="o1-role-info">
+                <span class="o1-role-title">Principal Product Manager, Data Collection</span>
+                <span class="o1-role-company">Adobe, Analytics &middot; Oakland, CA</span>
+              </div>
+              <div class="o1-role-right">
+                <span class="o1-role-date">Sep 2020 — Sep 2025</span>
+                <span class="o1-role-arrow" style="transform:rotate(90deg);color:#666;">›</span>
+              </div>
+            </button>
+            <div class="wf-role-detail open" id="o1-d2">
+              <p>Owned strategy and execution for mission-critical, user-facing data products used by large, complex organizations to make operational and policy decisions.</p>
+              <ul>
+                <li>Led end-to-end product strategy for data collection and onboarding workflows, translating ambiguous customer needs into shipped features used at scale</li>
+                <li>Drove product discovery through customer interviews, workflow mapping, and rapid iteration to reduce implementation time from months to minutes</li>
+                <li>Launched AI-powered analytics products that enabled non-technical users to understand complex performance data</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Adobe Adv Cloud -->
+          <div class="wf-role-item">
+            <button class="o1-role-hd" aria-expanded="false" onclick="toggleRole(this,'o1-d3')" aria-controls="o1-d3">
+              <div class="o1-role-info">
+                <span class="o1-role-title">Senior Product Manager, Attribution, Measurement &amp; Reporting</span>
+                <span class="o1-role-company">Adobe, Advertising Cloud &middot; Emeryville, CA</span>
+              </div>
+              <div class="o1-role-right">
+                <span class="o1-role-date">Dec 2017 — Sep 2020</span>
+                <span class="o1-role-arrow">›</span>
+              </div>
+            </button>
+            <div class="wf-role-detail" id="o1-d3">
+              <p>Responsible for all products related to attribution, measurement, and reporting on Advertising Cloud's Display unit.</p>
+              <ul>
+                <li>Led product discovery and delivery for cross-device attribution and reporting in highly constrained data environments</li>
+                <li>Led strategic launch of measurement and reporting for mobile app environments</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Cardlytics -->
+          <div class="wf-role-item">
+            <button class="o1-role-hd" aria-expanded="false" onclick="toggleRole(this,'o1-d4')" aria-controls="o1-d4">
+              <div class="o1-role-info">
+                <span class="o1-role-title">Senior Director, Measurement Analytics</span>
+                <span class="o1-role-company">Cardlytics &middot; Oakland, CA</span>
+              </div>
+              <div class="o1-role-right">
+                <span class="o1-role-date">Jan 2017 — Sep 2017</span>
+                <span class="o1-role-arrow">›</span>
+              </div>
+            </button>
+            <div class="wf-role-detail" id="o1-d4">
+              <p>Led analytics strategy for businesses using Cardlytics' purchase data to improve their marketing.</p>
+              <ul>
+                <li>Built a platform and content for reporting and insights used by internal sales teams as well as directly by customers</li>
+                <li>Drove all aspects of testing and measurement methodology to assess advertising effectiveness</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Adobe Senior Manager -->
+          <div class="wf-role-item">
+            <button class="o1-role-hd" aria-expanded="false" onclick="toggleRole(this,'o1-d5')" aria-controls="o1-d5">
+              <div class="o1-role-info">
+                <span class="o1-role-title">Senior Manager, Business Analytics</span>
+                <span class="o1-role-company">Adobe, Advertising Cloud &middot; San Francisco, CA</span>
+              </div>
+              <div class="o1-role-right">
+                <span class="o1-role-date">Aug 2008 — Jan 2017</span>
+                <span class="o1-role-arrow">›</span>
+              </div>
+            </button>
+            <div class="wf-role-detail" id="o1-d5">
+              <p>Led a team of analysts with two separate charters: optimization and data science for performance marketing campaigns, and usage analytics across Adobe Marketing Cloud.</p>
+              <ul>
+                <li>Managed a team of six business analysts; responsible for hiring, development, and compensation</li>
+                <li>Promoted three times from Business Analyst to Senior Manager</li>
+                <li>Created automated analyses using SQL and R to develop insights at scale</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div><!-- /section-acc -->
+  </div><!-- /wireframe-wrap -->
+
+  <div class="annotations">
+    <div class="ann-row"><div class="ann-num">①</div><div class="ann-text">Role rows get a › chevron on the right, identical in character to the section-level arrow. It is sized smaller (1rem vs 1.25rem) and starts at #ccc to visually subordinate it — you read it as "same idea, lower tier." Rotates 90° on expand, same as parent.</div></div>
+    <div class="ann-row"><div class="ann-num">②</div><div class="ann-text">The expanded role title gets a text underline (already in the codebase at role-header[aria-expanded="true"]). Combined with the rotated chevron, two signals confirm the expanded state.</div></div>
+    <div class="ann-row"><div class="ann-num">③</div><div class="ann-text">Zero new CSS paradigms. One 5-line addition to the existing role-header rule. Lowest implementation cost of all options.</div></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     OPTION 2 — Left Indicator
+     ══════════════════════════════════════════════════════ -->
+<div id="opt2" class="option-panel">
+  <div class="option-header">
+    <div class="option-title">Option 2: Left Indicator</div>
+    <div class="option-tagline">A small ▶ sits on the left of each role row — section arrows stay right, role arrows go left, creating an unambiguous two-tier visual system.</div>
+  </div>
+
+  <div class="wireframe-wrap">
+    <div class="wf-section-acc">
+      <button class="wf-section-hd" aria-expanded="true" onclick="toggleSection(this,'o2-section-body')">
+        <div class="wf-section-left">
+          <span class="wf-section-title">Work History</span>
+          <span class="wf-section-summary">Career Break &middot; Principal PM, Adobe &middot; Senior Director, Cardlytics</span>
+        </div>
+        <div class="wf-section-right">
+          <span class="wf-section-meta">5 roles &middot; 17+ yrs</span>
+          <span class="wf-section-arrow">›</span>
+        </div>
+      </button>
+
+      <div class="wf-section-body open" id="o2-section-body">
+        <div class="wf-role-list">
+
+          <div class="wf-role-item">
+            <button class="o2-role-hd" aria-expanded="false" onclick="toggleRole(this,'o2-d1')">
+              <div class="o2-left-indicator"><span class="o2-indicator-icon">▶</span></div>
+              <div class="o2-role-body">
+                <div class="o2-role-info">
+                  <span class="o2-role-title">Career Break <span class="ann">①</span></span>
+                  <span class="o2-role-company">Intentional pause &middot; social impact focus</span>
+                </div>
+                <span class="o2-role-date">Sep 2025 — Present</span>
+              </div>
+            </button>
+            <div class="wf-role-detail" id="o2-d1">
+              <p>Intentional career pause focused on renewal and identifying opportunities to apply product and data expertise toward positive social impact.</p>
+            </div>
+          </div>
+
+          <div class="wf-role-item">
+            <button class="o2-role-hd" aria-expanded="true" onclick="toggleRole(this,'o2-d2')">
+              <div class="o2-left-indicator"><span class="o2-indicator-icon" style="transform:rotate(90deg);color:#555;">▶</span></div>
+              <div class="o2-role-body">
+                <div class="o2-role-info">
+                  <span class="o2-role-title" style="text-decoration:underline;text-underline-offset:2px;">Principal Product Manager, Data Collection</span>
+                  <span class="o2-role-company">Adobe, Analytics &middot; Oakland, CA</span>
+                </div>
+                <span class="o2-role-date">Sep 2020 — Sep 2025</span>
+              </div>
+            </button>
+            <div class="wf-role-detail open" id="o2-d2">
+              <p>Owned strategy and execution for mission-critical, user-facing data products used by large, complex organizations to make operational and policy decisions.</p>
+              <ul>
+                <li>Led end-to-end product strategy for data collection and onboarding workflows, translating ambiguous customer needs into shipped features used at scale</li>
+                <li>Drove product discovery through customer interviews, workflow mapping, and rapid iteration to reduce implementation time from months to minutes</li>
+                <li>Launched AI-powered analytics products that enabled non-technical users to understand complex performance data</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="wf-role-item">
+            <button class="o2-role-hd" aria-expanded="false" onclick="toggleRole(this,'o2-d3')">
+              <div class="o2-left-indicator"><span class="o2-indicator-icon">▶</span></div>
+              <div class="o2-role-body">
+                <div class="o2-role-info">
+                  <span class="o2-role-title">Senior Product Manager, Attribution, Measurement &amp; Reporting</span>
+                  <span class="o2-role-company">Adobe, Advertising Cloud &middot; Emeryville, CA</span>
+                </div>
+                <span class="o2-role-date">Dec 2017 — Sep 2020</span>
+              </div>
+            </button>
+            <div class="wf-role-detail" id="o2-d3">
+              <p>Responsible for all products related to attribution, measurement, and reporting on Advertising Cloud's Display unit.</p>
+              <ul>
+                <li>Led product discovery and delivery for cross-device attribution and reporting in highly constrained data environments</li>
+                <li>Led strategic launch of measurement and reporting for mobile app environments</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="wf-role-item">
+            <button class="o2-role-hd" aria-expanded="false" onclick="toggleRole(this,'o2-d4')">
+              <div class="o2-left-indicator"><span class="o2-indicator-icon">▶</span></div>
+              <div class="o2-role-body">
+                <div class="o2-role-info">
+                  <span class="o2-role-title">Senior Director, Measurement Analytics</span>
+                  <span class="o2-role-company">Cardlytics &middot; Oakland, CA</span>
+                </div>
+                <span class="o2-role-date">Jan 2017 — Sep 2017</span>
+              </div>
+            </button>
+            <div class="wf-role-detail" id="o2-d4">
+              <p>Led analytics strategy for businesses using Cardlytics' purchase data to improve their marketing.</p>
+              <ul>
+                <li>Built a platform and content for reporting and insights</li>
+                <li>Drove all aspects of testing and measurement methodology</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="wf-role-item">
+            <button class="o2-role-hd" aria-expanded="false" onclick="toggleRole(this,'o2-d5')">
+              <div class="o2-left-indicator"><span class="o2-indicator-icon">▶</span></div>
+              <div class="o2-role-body">
+                <div class="o2-role-info">
+                  <span class="o2-role-title">Senior Manager, Business Analytics</span>
+                  <span class="o2-role-company">Adobe, Advertising Cloud &middot; San Francisco, CA</span>
+                </div>
+                <span class="o2-role-date">Aug 2008 — Jan 2017</span>
+              </div>
+            </button>
+            <div class="wf-role-detail" id="o2-d5">
+              <p>Led a team of analysts: optimization and data science for performance marketing campaigns, and usage analytics across Adobe Marketing Cloud.</p>
+              <ul>
+                <li>Managed six business analysts; responsible for hiring, development, and compensation</li>
+                <li>Promoted three times from Business Analyst to Senior Manager</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="annotations">
+    <div class="ann-row"><div class="ann-num">①</div><div class="ann-text">▶ on the left creates a clear spatial rule: section controls live on the right (›), item controls live on the left (▶). An employer who reads the page quickly will intuitively parse the two-level hierarchy from position alone.</div></div>
+    <div class="ann-row"><div class="ann-num">②</div><div class="ann-text">The ▶ icon at 0.625rem is subtle — it won't compete with the role title. On expand it rotates 90° (▼ effect). Good with or without hover, since the position itself is a permanent affordance.</div></div>
+    <div class="ann-row"><div class="ann-num">③</div><div class="ann-text">Downside: the left indent of 24px slightly misaligns role titles from the section header text above, which is flush-left. Worth checking against visual polish expectations.</div></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     OPTION 3 — Expand Tag
+     ══════════════════════════════════════════════════════ -->
+<div id="opt3" class="option-panel">
+  <div class="option-header">
+    <div class="option-title">Option 3: Expand Tag</div>
+    <div class="option-tagline">A small labelled tag ("details ↓" / "close ↑") sits below the date — explicit text removes any icon ambiguity, and inverts to filled on expand.</div>
+  </div>
+
+  <div class="wireframe-wrap">
+    <div class="wf-section-acc">
+      <button class="wf-section-hd" aria-expanded="true" onclick="toggleSection(this,'o3-section-body')">
+        <div class="wf-section-left">
+          <span class="wf-section-title">Work History</span>
+          <span class="wf-section-summary">Career Break &middot; Principal PM, Adobe &middot; Senior Director, Cardlytics</span>
+        </div>
+        <div class="wf-section-right">
+          <span class="wf-section-meta">5 roles &middot; 17+ yrs</span>
+          <span class="wf-section-arrow">›</span>
+        </div>
+      </button>
+
+      <div class="wf-section-body open" id="o3-section-body">
+        <div class="wf-role-list">
+
+          <div class="wf-role-item">
+            <button class="o3-role-hd" aria-expanded="false" onclick="toggleRole(this,'o3-d1')">
+              <div class="o3-role-info">
+                <span class="o3-role-title">Career Break <span class="ann">①</span></span>
+                <span class="o3-role-company">Intentional pause &middot; social impact focus</span>
+              </div>
+              <div class="o3-role-right">
+                <span class="o3-role-date">Sep 2025 — Present</span>
+                <span class="o3-expand-tag"><span class="o3-collapsed-label">details ↓</span><span class="o3-expanded-label">close ↑</span></span>
+              </div>
+            </button>
+            <div class="wf-role-detail" id="o3-d1">
+              <p>Intentional career pause focused on renewal and identifying opportunities to apply product and data expertise toward positive social impact.</p>
+            </div>
+          </div>
+
+          <div class="wf-role-item">
+            <button class="o3-role-hd" aria-expanded="true" onclick="toggleRole(this,'o3-d2')" style="background:#fafafa;">
+              <div class="o3-role-info">
+                <span class="o3-role-title">Principal Product Manager, Data Collection</span>
+                <span class="o3-role-company">Adobe, Analytics &middot; Oakland, CA</span>
+              </div>
+              <div class="o3-role-right">
+                <span class="o3-role-date">Sep 2020 — Sep 2025</span>
+                <span class="o3-expand-tag" style="background:#111;color:#fff;border-color:#111;"><span class="o3-collapsed-label" style="display:none;">details ↓</span><span class="o3-expanded-label" style="display:inline;">close ↑</span></span>
+              </div>
+            </button>
+            <div class="wf-role-detail open" id="o3-d2">
+              <p>Owned strategy and execution for mission-critical, user-facing data products used by large, complex organizations to make operational and policy decisions.</p>
+              <ul>
+                <li>Led end-to-end product strategy for data collection and onboarding workflows, translating ambiguous customer needs into shipped features used at scale</li>
+                <li>Drove product discovery through customer interviews, workflow mapping, and rapid iteration to reduce implementation time from months to minutes</li>
+                <li>Launched AI-powered analytics products that enabled non-technical users to understand complex performance data</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="wf-role-item">
+            <button class="o3-role-hd" aria-expanded="false" onclick="toggleRole(this,'o3-d3')">
+              <div class="o3-role-info">
+                <span class="o3-role-title">Senior Product Manager, Attribution, Measurement &amp; Reporting</span>
+                <span class="o3-role-company">Adobe, Advertising Cloud &middot; Emeryville, CA</span>
+              </div>
+              <div class="o3-role-right">
+                <span class="o3-role-date">Dec 2017 — Sep 2020</span>
+                <span class="o3-expand-tag"><span class="o3-collapsed-label">details ↓</span><span class="o3-expanded-label">close ↑</span></span>
+              </div>
+            </button>
+            <div class="wf-role-detail" id="o3-d3">
+              <p>Responsible for all products related to attribution, measurement, and reporting on Advertising Cloud's Display unit.</p>
+              <ul>
+                <li>Led product discovery and delivery for cross-device attribution and reporting</li>
+                <li>Led strategic launch of measurement and reporting for mobile app environments</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="wf-role-item">
+            <button class="o3-role-hd" aria-expanded="false" onclick="toggleRole(this,'o3-d4')">
+              <div class="o3-role-info">
+                <span class="o3-role-title">Senior Director, Measurement Analytics</span>
+                <span class="o3-role-company">Cardlytics &middot; Oakland, CA</span>
+              </div>
+              <div class="o3-role-right">
+                <span class="o3-role-date">Jan 2017 — Sep 2017</span>
+                <span class="o3-expand-tag"><span class="o3-collapsed-label">details ↓</span><span class="o3-expanded-label">close ↑</span></span>
+              </div>
+            </button>
+            <div class="wf-role-detail" id="o3-d4">
+              <p>Led analytics strategy for businesses using Cardlytics' purchase data to improve their marketing.</p>
+              <ul>
+                <li>Built a platform and content for reporting and insights</li>
+                <li>Drove all aspects of testing and measurement methodology</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="wf-role-item">
+            <button class="o3-role-hd" aria-expanded="false" onclick="toggleRole(this,'o3-d5')">
+              <div class="o3-role-info">
+                <span class="o3-role-title">Senior Manager, Business Analytics</span>
+                <span class="o3-role-company">Adobe, Advertising Cloud &middot; San Francisco, CA</span>
+              </div>
+              <div class="o3-role-right">
+                <span class="o3-role-date">Aug 2008 — Jan 2017</span>
+                <span class="o3-expand-tag"><span class="o3-collapsed-label">details ↓</span><span class="o3-expanded-label">close ↑</span></span>
+              </div>
+            </button>
+            <div class="wf-role-detail" id="o3-d5">
+              <p>Led a team of analysts: optimization and data science for performance marketing campaigns, and usage analytics across Adobe Marketing Cloud.</p>
+              <ul>
+                <li>Managed six business analysts; responsible for hiring, development, and compensation</li>
+                <li>Promoted three times from Business Analyst to Senior Manager</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="annotations">
+    <div class="ann-row"><div class="ann-num">①</div><div class="ann-text">The tag label removes all ambiguity — "details ↓" is unambiguous even for users who don't associate › with expand. Inverts to filled black "close ↑" when open, giving clear state feedback.</div></div>
+    <div class="ann-row"><div class="ann-num">②</div><div class="ann-text">The tag stacks below the date in a column, so the right-side column is: date on top, tag below. Clean visual grouping. On hover the tag border darkens to give pre-click feedback.</div></div>
+    <div class="ann-row"><div class="ann-num">③</div><div class="ann-text">Tradeoff: the tag adds visual weight to every row, even rows the employer has no interest in expanding. More visually busy than Options 1 or 4. Best for audiences who may not be power users of accordion UI.</div></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     OPTION 4 — Hover Reveal
+     ══════════════════════════════════════════════════════ -->
+<div id="opt4" class="option-panel">
+  <div class="option-header">
+    <div class="option-title">Option 4: Hover Reveal</div>
+    <div class="option-tagline">No affordance at rest — "details →" fades in on hover, keeping the list clean until the employer engages with a specific row.</div>
+  </div>
+
+  <div class="wireframe-wrap">
+    <div class="wf-section-acc">
+      <button class="wf-section-hd" aria-expanded="true" onclick="toggleSection(this,'o4-section-body')">
+        <div class="wf-section-left">
+          <span class="wf-section-title">Work History</span>
+          <span class="wf-section-summary">Career Break &middot; Principal PM, Adobe &middot; Senior Director, Cardlytics</span>
+        </div>
+        <div class="wf-section-right">
+          <span class="wf-section-meta">5 roles &middot; 17+ yrs</span>
+          <span class="wf-section-arrow">›</span>
+        </div>
+      </button>
+
+      <div class="wf-section-body open" id="o4-section-body">
+        <div class="wf-role-list">
+
+          <div class="o4-role-item">
+            <button class="o4-role-hd" aria-expanded="false" onclick="toggleRole(this,'o4-d1')">
+              <div class="o4-role-info">
+                <span class="o4-role-title">Career Break <span class="ann">①</span></span>
+                <span class="o4-role-company">Intentional pause &middot; social impact focus</span>
+              </div>
+              <div class="o4-role-right">
+                <span class="o4-hover-hint">details →</span>
+                <span class="o4-role-date">Sep 2025 — Present</span>
+              </div>
+            </button>
+            <div class="wf-role-detail" id="o4-d1">
+              <p>Intentional career pause focused on renewal and identifying opportunities to apply product and data expertise toward positive social impact.</p>
+            </div>
+          </div>
+
+          <div class="o4-role-item">
+            <button class="o4-role-hd" aria-expanded="true" onclick="toggleRole(this,'o4-d2')" style="background:#fafafa;">
+              <div class="o4-role-info">
+                <span class="o4-role-title" style="text-decoration:underline;text-underline-offset:2px;">Principal Product Manager, Data Collection</span>
+                <span class="o4-role-company">Adobe, Analytics &middot; Oakland, CA</span>
+              </div>
+              <div class="o4-role-right">
+                <span class="o4-hover-hint" style="opacity:1;color:#555;">close ↑</span>
+                <span class="o4-role-date">Sep 2020 — Sep 2025</span>
+              </div>
+            </button>
+            <div class="wf-role-detail open" id="o4-d2">
+              <p>Owned strategy and execution for mission-critical, user-facing data products used by large, complex organizations to make operational and policy decisions.</p>
+              <ul>
+                <li>Led end-to-end product strategy for data collection and onboarding workflows, translating ambiguous customer needs into shipped features used at scale</li>
+                <li>Drove product discovery through customer interviews, workflow mapping, and rapid iteration to reduce implementation time from months to minutes</li>
+                <li>Launched AI-powered analytics products that enabled non-technical users to understand complex performance data</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="o4-role-item">
+            <button class="o4-role-hd" aria-expanded="false" onclick="toggleRole(this,'o4-d3')">
+              <div class="o4-role-info">
+                <span class="o4-role-title">Senior Product Manager, Attribution, Measurement &amp; Reporting</span>
+                <span class="o4-role-company">Adobe, Advertising Cloud &middot; Emeryville, CA</span>
+              </div>
+              <div class="o4-role-right">
+                <span class="o4-hover-hint">details →</span>
+                <span class="o4-role-date">Dec 2017 — Sep 2020</span>
+              </div>
+            </button>
+            <div class="wf-role-detail" id="o4-d3">
+              <p>Responsible for all products related to attribution, measurement, and reporting on Advertising Cloud's Display unit.</p>
+              <ul>
+                <li>Led product discovery and delivery for cross-device attribution and reporting</li>
+                <li>Led strategic launch of measurement and reporting for mobile app environments</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="o4-role-item">
+            <button class="o4-role-hd" aria-expanded="false" onclick="toggleRole(this,'o4-d4')">
+              <div class="o4-role-info">
+                <span class="o4-role-title">Senior Director, Measurement Analytics</span>
+                <span class="o4-role-company">Cardlytics &middot; Oakland, CA</span>
+              </div>
+              <div class="o4-role-right">
+                <span class="o4-hover-hint">details →</span>
+                <span class="o4-role-date">Jan 2017 — Sep 2017</span>
+              </div>
+            </button>
+            <div class="wf-role-detail" id="o4-d4">
+              <p>Led analytics strategy for businesses using Cardlytics' purchase data to improve their marketing.</p>
+              <ul>
+                <li>Built a platform and content for reporting and insights</li>
+                <li>Drove all aspects of testing and measurement methodology</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="o4-role-item">
+            <button class="o4-role-hd" aria-expanded="false" onclick="toggleRole(this,'o4-d5')">
+              <div class="o4-role-info">
+                <span class="o4-role-title">Senior Manager, Business Analytics</span>
+                <span class="o4-role-company">Adobe, Advertising Cloud &middot; San Francisco, CA</span>
+              </div>
+              <div class="o4-role-right">
+                <span class="o4-hover-hint">details →</span>
+                <span class="o4-role-date">Aug 2008 — Jan 2017</span>
+              </div>
+            </button>
+            <div class="wf-role-detail" id="o4-d5">
+              <p>Led a team of analysts: optimization and data science for performance marketing campaigns, and usage analytics across Adobe Marketing Cloud.</p>
+              <ul>
+                <li>Managed six business analysts; responsible for hiring, development, and compensation</li>
+                <li>Promoted three times from Business Analyst to Senior Manager</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+        <div class="hover-note">Hover over a row to reveal the expand hint — try it above ↑</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="annotations">
+    <div class="ann-row"><div class="ann-num">①</div><div class="ann-text">At rest the list reads as pure content — no chrome, no icons competing with the role names. Hover triggers a "details →" hint that fades in. When expanded, "close ↑" is always visible to allow collapse.</div></div>
+    <div class="ann-row"><div class="ann-num">②</div><div class="ann-text">Works well on desktop where hover is available. On mobile (touch), the hover state never fires — there is zero affordance that items are expandable. Requires a fallback (e.g., always show the hint on mobile).</div></div>
+    <div class="ann-row"><div class="ann-num">③</div><div class="ann-text">Best fit for an audience of desktop-first professional visitors (recruiters, hiring managers). Worst fit if any significant mobile traffic is expected.</div></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     SUMMARY
+     ══════════════════════════════════════════════════════ -->
+<div id="summary" class="option-panel">
+  <div class="summary-wrap">
+    <h2>Summary</h2>
+    <table class="score-table">
+      <thead>
+        <tr>
+          <th>Option</th>
+          <th>Approach</th>
+          <th>Clarity</th>
+          <th>Visual Cleanliness</th>
+          <th>Mobile Safe</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="rec-row">
+          <td><strong>1: Safe ★</strong></td>
+          <td>› chevron on right, mirrors section pattern, smaller &amp; lighter</td>
+          <td><span class="stars">★★★★☆</span></td>
+          <td><span class="stars">★★★★★</span></td>
+          <td><span class="stars">★★★★★</span></td>
+        </tr>
+        <tr>
+          <td>2: Left Indicator</td>
+          <td>▶ on left, creates spatial two-tier hierarchy</td>
+          <td><span class="stars">★★★★★</span></td>
+          <td><span class="stars">★★★★☆</span></td>
+          <td><span class="stars">★★★★★</span></td>
+        </tr>
+        <tr>
+          <td>3: Expand Tag</td>
+          <td>Labelled "details ↓" tag — unambiguous, inverts on expand</td>
+          <td><span class="stars">★★★★★</span></td>
+          <td><span class="stars">★★★☆☆</span></td>
+          <td><span class="stars">★★★★★</span></td>
+        </tr>
+        <tr>
+          <td>4: Hover Reveal</td>
+          <td>Clean at rest, hint fades in on hover</td>
+          <td><span class="stars">★★★☆☆</span></td>
+          <td><span class="stars">★★★★★</span></td>
+          <td><span class="stars">★★☆☆☆</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="rec-block">
+      <strong>Recommended: Option 1 — Safe Option.</strong> Adding a › chevron to role rows requires a single CSS addition, maintains perfect consistency with the existing design system, and works on all devices. It's the clearest path to implementation with the lowest risk of visual disruption. Option 2 (Left Indicator) is a strong second if you want a more explicit two-tier spatial hierarchy — worth considering if you later add a third nesting level.
+    </div>
+  </div>
+</div>
+
+
+<script>
+  function showTab(id) {
+    document.querySelectorAll('.option-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  function toggleSection(btn, bodyId) {
+    const isOpen = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!isOpen));
+    document.getElementById(bodyId).classList.toggle('open', !isOpen);
+  }
+
+  function toggleRole(btn, detailId) {
+    const isOpen = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!isOpen));
+    document.getElementById(detailId).classList.toggle('open', !isOpen);
+  }
+</script>
+</body>
+</html>

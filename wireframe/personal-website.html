@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Website — Wireframes</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #fff; color: #000; font-size: 14px; line-height: 1.5; }
+
+    /* ── Title Bar ── */
+    .title-bar {
+      background: #000; color: #fff;
+      padding: 11px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+      position: sticky; top: 0; z-index: 200;
+    }
+    .title-bar h1 { font-size: 13px; font-weight: 600; letter-spacing: 0.03em; }
+    .rec-badge { font-size: 11px; background: #fff; color: #000; padding: 4px 10px; font-weight: 700; }
+
+    /* ── Tab Nav ── */
+    .tab-nav {
+      border-bottom: 2px solid #000;
+      display: flex; background: #fff;
+      position: sticky; top: 39px; z-index: 199;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      padding: 9px 18px; border: none; background: none; cursor: pointer;
+      font-size: 12px; font-weight: 600; color: #666;
+      border-bottom: 3px solid transparent; margin-bottom: -2px;
+      font-family: inherit; white-space: nowrap; letter-spacing: 0.02em;
+    }
+    .tab-btn:hover { color: #000; }
+    .tab-btn.active { color: #000; border-bottom-color: #000; }
+
+    /* ── Option Panels ── */
+    .option-panel { display: none; }
+    .option-panel.active { display: block; }
+
+    .option-header { padding: 28px 40px 0; border-bottom: none; }
+    .option-title { font-size: 18px; font-weight: 700; margin-bottom: 3px; }
+    .option-tagline { font-size: 12px; color: #666; margin-bottom: 20px; }
+    .wireframe-wrap { margin: 0 40px 40px; border: 2px solid #000; }
+
+    /* ── Annotations ── */
+    .ann { display: inline-block; width: 17px; height: 17px; background: #000; color: #fff; border-radius: 50%; font-size: 9px; font-weight: 700; line-height: 17px; text-align: center; vertical-align: middle; margin-left: 3px; cursor: default; }
+    .annotations { margin: 20px 40px 0; padding-bottom: 40px; }
+    .ann-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 7px; }
+    .ann-num { flex-shrink: 0; width: 17px; height: 17px; background: #000; color: #fff; border-radius: 50%; font-size: 9px; font-weight: 700; line-height: 17px; text-align: center; }
+    .ann-text { font-size: 12px; color: #333; }
+
+    /* ════════════════════════════════
+       SHARED WIREFRAME COMPONENTS
+       ════════════════════════════════ */
+
+    /* Navbar */
+    .wf-nav { display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; border-bottom: 2px solid #000; background: #fff; }
+    .wf-nav-brand { font-weight: 700; font-size: 16px; letter-spacing: 0.05em; }
+    .wf-nav-links { display: flex; gap: 28px; }
+    .wf-nav-link { font-size: 12px; font-weight: 600; color: #444; cursor: pointer; padding-bottom: 2px; border-bottom: 2px solid transparent; text-transform: uppercase; letter-spacing: 0.06em; }
+    .wf-nav-link:hover, .wf-nav-link.active { color: #000; border-bottom-color: #000; }
+
+    /* Buttons */
+    .wf-btn { display: inline-block; padding: 9px 20px; border: 2px solid #000; font-size: 12px; font-weight: 700; cursor: pointer; background: #fff; font-family: inherit; letter-spacing: 0.03em; }
+    .wf-btn:hover { background: #000; color: #fff; }
+    .wf-btn.filled { background: #000; color: #fff; }
+    .wf-btn.filled:hover { background: #333; }
+    .wf-btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .wf-btn-row.centered { justify-content: center; }
+
+    /* Section */
+    .wf-section { padding: 36px 40px; border-bottom: 1px solid #eee; }
+    .wf-section:last-child { border-bottom: none; }
+    .wf-section-title { font-size: 18px; font-weight: 700; margin-bottom: 24px; display: flex; align-items: baseline; gap: 8px; }
+    .wf-section-title::after { content: ''; flex: 1; height: 2px; background: #eee; margin-left: 12px; }
+
+    /* Timeline */
+    .wf-timeline { border-left: 2px solid #000; padding-left: 0; margin-left: 8px; }
+    .wf-tl-item { position: relative; padding: 0 0 28px 28px; }
+    .wf-tl-item:last-child { padding-bottom: 0; }
+    .wf-tl-dot { position: absolute; left: -7px; top: 5px; width: 12px; height: 12px; background: #fff; border: 2px solid #000; border-radius: 50%; }
+    .wf-tl-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; gap: 12px; flex-wrap: wrap; }
+    .wf-tl-role { font-weight: 700; font-size: 14px; }
+    .wf-tl-co { font-size: 13px; color: #333; }
+    .wf-tl-date { font-size: 11px; background: #eee; padding: 2px 8px; color: #555; white-space: nowrap; }
+    .wf-tl-desc { font-size: 12px; color: #555; line-height: 1.6; margin-bottom: 8px; }
+    .wf-tl-list { list-style: none; }
+    .wf-tl-list li { font-size: 12px; color: #555; padding-left: 14px; position: relative; margin-bottom: 3px; }
+    .wf-tl-list li::before { content: '—'; position: absolute; left: 0; color: #bbb; }
+
+    /* Project Cards */
+    .wf-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .wf-card { border: 1px solid #ccc; }
+    .wf-card-img { height: 110px; background: #eeeeee; border-bottom: 1px solid #ccc; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #999; }
+    .wf-card-body { padding: 14px; }
+    .wf-card-title { font-weight: 700; font-size: 13px; margin-bottom: 6px; }
+    .wf-card-desc { font-size: 12px; color: #555; line-height: 1.5; margin-bottom: 10px; }
+    .wf-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .wf-tag { font-size: 10px; border: 1px solid #ccc; padding: 2px 7px; color: #666; }
+
+    /* Contact */
+    .wf-contact-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 32px; }
+    .wf-social { display: flex; flex-direction: column; gap: 8px; }
+    .wf-social-item { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border: 1px solid #ccc; cursor: pointer; font-size: 13px; }
+    .wf-social-item:hover { border-color: #000; }
+    .wf-social-icon { width: 18px; height: 18px; background: #ccc; flex-shrink: 0; }
+    .wf-form { display: flex; flex-direction: column; gap: 12px; }
+    .wf-form-row { display: flex; flex-direction: column; gap: 3px; }
+    .wf-form-row label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; color: #666; }
+    .wf-form-row input, .wf-form-row textarea { border: 1px solid #ccc; padding: 8px 10px; font-size: 13px; font-family: inherit; resize: vertical; }
+    .wf-form-row input:focus, .wf-form-row textarea:focus { outline: none; border-color: #000; }
+
+    /* Footer */
+    .wf-footer { background: #000; color: #fff; padding: 18px 40px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; }
+
+    /* Skills grid */
+    .wf-skills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .wf-skill { border: 1px solid #ccc; padding: 10px; font-size: 12px; text-align: center; color: #333; }
+    .wf-skill:hover { border-color: #000; }
+
+    /* ════════════════════════════════
+       OPTION 2: TEXT-FIRST
+       ════════════════════════════════ */
+    .wf2 { max-width: 680px; margin: 0 auto; padding: 48px 40px; }
+    .wf2-name { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+    .wf2-role { font-size: 14px; color: #333; margin-bottom: 2px; }
+    .wf2-wit { font-size: 12px; color: #999; font-style: italic; margin-bottom: 36px; }
+    .wf2-inline-nav { display: flex; gap: 20px; flex-wrap: wrap; padding: 14px 0; border-top: 1px solid #000; border-bottom: 1px solid #000; margin-bottom: 48px; }
+    .wf2-inline-nav a { font-size: 12px; font-weight: 600; color: #000; cursor: pointer; text-transform: uppercase; letter-spacing: 0.06em; }
+    .wf2-inline-nav a:hover { text-decoration: underline; }
+    .wf2-sect { margin-bottom: 48px; }
+    .wf2-sect-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: #999; font-weight: 700; margin-bottom: 16px; }
+    .wf2-body { font-size: 15px; line-height: 1.75; color: #111; margin-bottom: 14px; }
+    .wf2-aside { font-size: 13px; color: #666; border-left: 3px solid #ccc; padding: 8px 14px; margin: 18px 0; font-style: italic; }
+    .wf2-work-item { padding: 14px 0; border-bottom: 1px solid #eee; }
+    .wf2-work-item:last-child { border-bottom: none; }
+    .wf2-work-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; cursor: pointer; }
+    .wf2-work-top:hover .wf2-work-role { text-decoration: underline; }
+    .wf2-work-left { }
+    .wf2-work-role { font-weight: 700; font-size: 14px; }
+    .wf2-work-co { font-size: 13px; color: #555; }
+    .wf2-work-date { font-size: 12px; color: #999; white-space: nowrap; }
+    .wf2-work-detail { display: none; margin-top: 12px; font-size: 13px; color: #555; line-height: 1.6; padding-left: 16px; border-left: 2px solid #eee; }
+    .wf2-work-detail.open { display: block; }
+    .wf2-work-detail ul { list-style: none; margin-top: 8px; }
+    .wf2-work-detail ul li { padding-left: 14px; position: relative; margin-bottom: 4px; }
+    .wf2-work-detail ul li::before { content: '—'; position: absolute; left: 0; color: #ccc; }
+    .wf2-toggle { display: inline-block; font-size: 11px; color: #999; margin-top: 4px; cursor: pointer; }
+    .wf2-toggle:hover { color: #000; }
+    .wf2-proj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .wf2-proj { border: 1px solid #eee; padding: 16px; cursor: pointer; }
+    .wf2-proj:hover { border-color: #ccc; }
+    .wf2-proj-name { font-weight: 700; font-size: 13px; margin-bottom: 5px; }
+    .wf2-proj-desc { font-size: 12px; color: #666; line-height: 1.5; margin-bottom: 8px; }
+    .wf2-proj-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+    .wf2-proj-tag { font-size: 10px; border: 1px solid #ddd; padding: 1px 6px; color: #888; }
+    .wf2-contact-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px; }
+    .wf2-contact-row:last-child { border-bottom: none; }
+    .wf2-contact-label { font-weight: 600; min-width: 90px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #666; }
+    .wf2-contact-val { color: #000; cursor: pointer; }
+    .wf2-contact-val:hover { text-decoration: underline; }
+
+    /* ════════════════════════════════
+       OPTION 3: HUB & SPOKE
+       ════════════════════════════════ */
+    .wf3-landing { padding: 56px 40px 40px; text-align: center; border-bottom: 1px solid #eee; }
+    .wf3-name { font-size: 34px; font-weight: 700; margin-bottom: 5px; }
+    .wf3-tagline { font-size: 14px; color: #333; margin-bottom: 4px; }
+    .wf3-wit { font-size: 12px; color: #999; font-style: italic; margin-bottom: 36px; }
+    .wf3-tiles { display: grid; grid-template-columns: repeat(4, 1fr); background: #000; gap: 1px; border: 2px solid #000; max-width: 860px; margin: 0 auto; }
+    .wf3-tile { background: #fff; padding: 24px 18px; cursor: pointer; text-align: left; transition: background 0.12s; }
+    .wf3-tile:hover { background: #f5f5f5; }
+    .wf3-tile.active-tile { background: #000; color: #fff; }
+    .wf3-tile-num { font-size: 10px; color: #999; letter-spacing: 0.08em; margin-bottom: 10px; font-weight: 700; }
+    .wf3-tile.active-tile .wf3-tile-num { color: #777; }
+    .wf3-tile-name { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+    .wf3-tile-teaser { font-size: 11px; color: #666; line-height: 1.5; }
+    .wf3-tile.active-tile .wf3-tile-teaser { color: #bbb; }
+    .wf3-pane { display: none; padding: 36px 40px; border-bottom: 1px solid #eee; }
+    .wf3-pane.open { display: block; }
+    .wf3-pane-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .wf3-pane-title { font-size: 20px; font-weight: 700; }
+    .wf3-close { font-size: 11px; color: #999; cursor: pointer; border: 1px solid #ccc; padding: 3px 10px; }
+    .wf3-close:hover { color: #000; border-color: #000; }
+
+    /* ════════════════════════════════
+       OPTION 4: ACCORDION / SCANNABLE
+       ════════════════════════════════ */
+    .wf4-header { padding: 40px; border-bottom: 2px solid #000; }
+    .wf4-name { font-size: 26px; font-weight: 700; margin-bottom: 3px; }
+    .wf4-role { font-size: 14px; color: #333; margin-bottom: 12px; }
+    .wf4-bio { font-size: 14px; color: #555; max-width: 580px; line-height: 1.7; margin-bottom: 18px; }
+    .wf4-meta-row { display: flex; gap: 14px; flex-wrap: wrap; }
+    .wf4-pill { font-size: 11px; border: 1px solid #ccc; padding: 5px 12px; color: #555; cursor: pointer; }
+    .wf4-pill:hover { border-color: #000; color: #000; }
+    .wf4-pill.primary { background: #000; color: #fff; border-color: #000; }
+    .wf4-pill.primary:hover { background: #333; }
+
+    .wf4-acc { border-bottom: 1px solid #eee; }
+    .wf4-acc-hd { padding: 18px 40px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
+    .wf4-acc-hd:hover { background: #fafafa; }
+    .wf4-acc-left { display: flex; align-items: baseline; gap: 14px; }
+    .wf4-acc-title { font-weight: 700; font-size: 15px; }
+    .wf4-acc-summary { font-size: 12px; color: #888; }
+    .wf4-acc-right { display: flex; align-items: center; gap: 10px; }
+    .wf4-acc-count { font-size: 11px; background: #eee; padding: 2px 8px; color: #666; }
+    .wf4-acc-arrow { font-size: 16px; color: #bbb; transition: transform 0.18s; display: inline-block; }
+    .wf4-acc-arrow.open { transform: rotate(90deg); }
+    .wf4-acc-body { display: none; padding: 0 40px 24px; }
+    .wf4-acc-body.open { display: block; }
+
+    .wf4-scan-list { list-style: none; }
+    .wf4-scan-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f2f2f2; cursor: pointer; }
+    .wf4-scan-item:last-child { border-bottom: none; }
+    .wf4-scan-item:hover { background: #fafafa; margin: 0 -8px; padding: 12px 8px; }
+    .wf4-scan-main { font-weight: 700; font-size: 13px; }
+    .wf4-scan-sub { font-size: 12px; color: #777; }
+    .wf4-scan-date { font-size: 11px; color: #bbb; white-space: nowrap; padding-left: 12px; }
+
+    .wf4-sub-detail { display: none; padding: 12px 0 4px 16px; border-left: 2px solid #eee; margin-top: 4px; }
+    .wf4-sub-detail.open { display: block; }
+    .wf4-sub-detail p { font-size: 12px; color: #555; line-height: 1.6; margin-bottom: 6px; }
+    .wf4-sub-detail ul { list-style: none; }
+    .wf4-sub-detail ul li { font-size: 12px; color: #666; padding-left: 14px; position: relative; margin-bottom: 3px; }
+    .wf4-sub-detail ul li::before { content: '—'; position: absolute; left: 0; color: #ccc; }
+
+    .wf4-about-body { font-size: 13px; color: #555; line-height: 1.7; }
+    .wf4-about-body p { margin-bottom: 12px; }
+    .wf4-competencies { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+    .wf4-comp { font-size: 11px; border: 1px solid #ccc; padding: 4px 10px; color: #555; }
+
+    .wf4-contact-list { list-style: none; }
+    .wf4-contact-list li { display: flex; align-items: center; gap: 14px; padding: 10px 0; border-bottom: 1px solid #f2f2f2; }
+    .wf4-contact-list li:last-child { border-bottom: none; }
+    .wf4-contact-key { font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; min-width: 80px; color: #666; }
+    .wf4-contact-val { font-size: 13px; color: #000; cursor: pointer; }
+    .wf4-contact-val:hover { text-decoration: underline; }
+
+    /* ════════════════════════════════
+       SUMMARY
+       ════════════════════════════════ */
+    .summary-wrap { padding: 36px 40px 48px; }
+    .summary-wrap h2 { font-size: 18px; font-weight: 700; margin-bottom: 24px; }
+    .sum-table { width: 100%; border-collapse: collapse; margin-bottom: 28px; font-size: 13px; }
+    .sum-table th { text-align: left; padding: 10px 14px; border-bottom: 2px solid #000; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+    .sum-table td { padding: 12px 14px; border-bottom: 1px solid #eee; vertical-align: top; }
+    .sum-table tr:last-child td { border-bottom: none; }
+    .sum-table tr.rec-row td { background: #f7f7f7; }
+    .stars { letter-spacing: 2px; }
+    .rec-block { background: #000; color: #fff; padding: 20px 24px; font-size: 13px; line-height: 1.65; }
+    .rec-block strong { font-size: 13px; display: block; margin-bottom: 6px; letter-spacing: 0.02em; }
+  </style>
+</head>
+<body>
+
+<!-- ═══ TITLE BAR ═══ -->
+<div class="title-bar">
+  <h1>Personal Website — James O'Reilly</h1>
+  <span class="rec-badge">★ Recommended: Option 4</span>
+</div>
+
+<!-- ═══ TAB NAV ═══ -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="showTab('opt1')">1: Safe Option</button>
+  <button class="tab-btn" onclick="showTab('opt2')">2: Text-First</button>
+  <button class="tab-btn" onclick="showTab('opt3')">3: Hub &amp; Spoke</button>
+  <button class="tab-btn" onclick="showTab('opt4')">4: Accordion</button>
+  <button class="tab-btn" onclick="showTab('summary')">Summary</button>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     OPTION 1: SAFE OPTION
+     ══════════════════════════════════════════════════════ -->
+<div id="opt1" class="option-panel active">
+  <div class="option-header">
+    <div class="option-title">Option 1: Safe Option</div>
+    <div class="option-tagline">Extends the current single-page scroll template — familiar employer expectations met with polish.</div>
+  </div>
+
+  <div class="wireframe-wrap">
+    <!-- Navbar -->
+    <div class="wf-nav">
+      <div class="wf-nav-brand">J.O.<span class="ann">①</span></div>
+      <div class="wf-nav-links">
+        <span class="wf-nav-link">About</span>
+        <span class="wf-nav-link">Experience</span>
+        <span class="wf-nav-link active">Projects</span>
+        <span class="wf-nav-link">Contact</span>
+      </div>
+    </div>
+
+    <!-- Hero -->
+    <div style="padding: 56px 40px; text-align: center; background: #f9f9f9; border-bottom: 1px solid #eee;">
+      <div style="width: 90px; height: 90px; border-radius: 50%; background: #ccc; border: 2px solid #000; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #777;">Photo</div>
+      <h1 style="font-size: 30px; margin-bottom: 6px;">Hi, I'm <strong>James O'Reilly</strong></h1>
+      <p style="font-size: 14px; color: #555; margin-bottom: 6px;">Product Manager · Strategic Thinker · Occasional Overthinker<span class="ann">②</span></p>
+      <p style="font-size: 13px; color: #666; max-width: 520px; margin: 0 auto 24px; line-height: 1.65;">I help teams build products people actually want to use — which turns out to be harder than it sounds and more rewarding than expected.</p>
+      <div class="wf-btn-row centered" style="margin-bottom: 32px;">
+        <button class="wf-btn filled">Get in Touch</button>
+        <button class="wf-btn">View My Work</button>
+      </div>
+      <div style="display: flex; gap: 48px; justify-content: center;">
+        <div style="text-align: center;"><div style="font-size: 26px; font-weight: 700;">8+</div><div style="font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.05em;">Years</div></div>
+        <div style="text-align: center;"><div style="font-size: 26px; font-weight: 700;">5M+</div><div style="font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.05em;">Users Impacted</div></div>
+        <div style="text-align: center;"><div style="font-size: 26px; font-weight: 700;">12+</div><div style="font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.05em;">Products Launched</div></div>
+      </div>
+    </div>
+
+    <!-- About -->
+    <div class="wf-section">
+      <div class="wf-section-title">About Me</div>
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 32px;">
+        <div>
+          <p style="font-size: 13px; color: #444; line-height: 1.75; margin-bottom: 14px;">I'm a product leader who believes the best products are built at the intersection of customer empathy and business rigour. Eight years across healthcare, fintech, and B2B SaaS have taught me that the most valuable skill is knowing which problem to solve next.</p>
+          <p style="font-size: 13px; color: #444; line-height: 1.75;">I specialise in taking complex, ambiguous spaces and turning them into clear strategies with measurable outcomes. I've worked at startups where I wore every hat and at large orgs where I learned how to get things done without formal authority.</p>
+        </div>
+        <div>
+          <p style="font-size: 12px; font-weight: 700; margin-bottom: 12px;">Core Competencies</p>
+          <div class="wf-skills">
+            <div class="wf-skill">Product Strategy</div>
+            <div class="wf-skill">Team Leadership</div>
+            <div class="wf-skill">Data &amp; Analytics</div>
+            <div class="wf-skill">Market Research</div>
+            <div class="wf-skill">Roadmapping</div>
+            <div class="wf-skill">Go-to-Market</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Experience -->
+    <div class="wf-section" style="background: #fafafa;">
+      <div class="wf-section-title">Experience<span class="ann">③</span></div>
+      <div class="wf-timeline">
+        <div class="wf-tl-item">
+          <div class="wf-tl-dot"></div>
+          <div class="wf-tl-header">
+            <div><div class="wf-tl-role">Senior Product Manager</div><div class="wf-tl-co">Acme Health Tech</div></div>
+            <span class="wf-tl-date">2021 — Present</span>
+          </div>
+          <p class="wf-tl-desc">Led product strategy for a patient-facing scheduling platform serving 2M+ users across 40 health systems.</p>
+          <ul class="wf-tl-list">
+            <li>Reduced no-show rate 28% by redesigning booking confirmation flow</li>
+            <li>Grew activation from 42% to 71% in 6 months post-launch</li>
+            <li>Managed 4 direct reports and cross-functional team of 18</li>
+          </ul>
+        </div>
+        <div class="wf-tl-item">
+          <div class="wf-tl-dot"></div>
+          <div class="wf-tl-header">
+            <div><div class="wf-tl-role">Product Manager</div><div class="wf-tl-co">FinFlow (Series B Startup)</div></div>
+            <span class="wf-tl-date">2018 — 2021</span>
+          </div>
+          <p class="wf-tl-desc">Owned the core payments product from 0→1 through Series B, working directly with CTO and founding team.</p>
+          <ul class="wf-tl-list">
+            <li>Launched payments feature that became $3.2M ARR in year one</li>
+            <li>Defined roadmap across 3 product lines with 2-week sprint cadence</li>
+          </ul>
+        </div>
+        <div class="wf-tl-item">
+          <div class="wf-tl-dot"></div>
+          <div class="wf-tl-header">
+            <div><div class="wf-tl-role">Associate Product Manager</div><div class="wf-tl-co">BigCo Enterprise</div></div>
+            <span class="wf-tl-date">2016 — 2018</span>
+          </div>
+          <p class="wf-tl-desc">Rotational PM programme across analytics, mobile, and platform teams.</p>
+          <ul class="wf-tl-list">
+            <li>Built mobile analytics dashboard adopted by 8,000+ enterprise users</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Projects -->
+    <div class="wf-section">
+      <div class="wf-section-title">Featured Projects</div>
+      <div class="wf-cards">
+        <div class="wf-card">
+          <div class="wf-card-img">[ Project Screenshot ]</div>
+          <div class="wf-card-body">
+            <div class="wf-card-title">HealthScheduler 2.0</div>
+            <p class="wf-card-desc">End-to-end redesign of appointment booking flow. Reduced scheduling time from 7 min to 2.5 min.</p>
+            <div class="wf-tags"><span class="wf-tag">Healthcare</span><span class="wf-tag">0-to-1</span><span class="wf-tag">UX Research</span></div>
+          </div>
+        </div>
+        <div class="wf-card">
+          <div class="wf-card-img">[ Project Screenshot ]</div>
+          <div class="wf-card-body">
+            <div class="wf-card-title">FinFlow Payments</div>
+            <p class="wf-card-desc">Core payments product built from scratch. $3.2M ARR in year one, 99.97% uptime SLA.</p>
+            <div class="wf-tags"><span class="wf-tag">Fintech</span><span class="wf-tag">Payments</span><span class="wf-tag">B2B</span></div>
+          </div>
+        </div>
+        <div class="wf-card">
+          <div class="wf-card-img">[ Project Screenshot ]</div>
+          <div class="wf-card-body">
+            <div class="wf-card-title">Enterprise Analytics</div>
+            <p class="wf-card-desc">Self-serve analytics suite for enterprise teams. Adopted by 8K+ users, replaced 3 legacy tools.</p>
+            <div class="wf-tags"><span class="wf-tag">B2B SaaS</span><span class="wf-tag">Analytics</span><span class="wf-tag">Mobile</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact -->
+    <div class="wf-section">
+      <div class="wf-section-title">Let's Connect</div>
+      <p style="font-size: 13px; color: #666; margin-bottom: 24px;">Open to senior IC and leadership roles, advisory conversations, and the occasional well-framed coffee chat.</p>
+      <div class="wf-contact-grid">
+        <div class="wf-social">
+          <div class="wf-social-item"><div class="wf-social-icon"></div> LinkedIn</div>
+          <div class="wf-social-item"><div class="wf-social-icon"></div> GitHub</div>
+          <div class="wf-social-item"><div class="wf-social-icon"></div> Email<span class="ann">④</span></div>
+        </div>
+        <div class="wf-form">
+          <div class="wf-form-row"><label>Name</label><input type="text" placeholder="Your name"></div>
+          <div class="wf-form-row"><label>Email</label><input type="email" placeholder="your@email.com"></div>
+          <div class="wf-form-row"><label>Message</label><textarea rows="4" placeholder="What are you working on?"></textarea></div>
+          <div><button class="wf-btn filled">Send Message</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wf-footer">
+      <span>© 2026 James O'Reilly</span>
+      <span>Built with care (and mild perfectionism)</span>
+    </div>
+  </div><!-- /wireframe-wrap -->
+
+  <div class="annotations">
+    <div class="ann-row"><div class="ann-num">①</div><div class="ann-text">Initials brand links back to top; acts as home button — familiar employer convention.</div></div>
+    <div class="ann-row"><div class="ann-num">②</div><div class="ann-text">Subtitle carries the "wit" — a self-aware aside signals personality without being unprofessional.</div></div>
+    <div class="ann-row"><div class="ann-num">③</div><div class="ann-text">Timeline shows all roles at a glance, but each requires scrolling to read. Content is visible but spread across vertical real estate.</div></div>
+    <div class="ann-row"><div class="ann-num">④</div><div class="ann-text">Dual contact options (social links + form) reduce friction for different employer preferences — some prefer to initiate via LinkedIn, others via email.</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     OPTION 2: TEXT-FIRST
+     ══════════════════════════════════════════════════════ -->
+<div id="opt2" class="option-panel">
+  <div class="option-header">
+    <div class="option-title">Option 2: Text-First</div>
+    <div class="option-tagline">Minimal, prose-forward page inspired by personal sites like lusmo.re — wit lives in the writing, not the chrome.</div>
+  </div>
+
+  <div class="wireframe-wrap">
+    <div class="wf2">
+      <!-- Identity -->
+      <div style="margin-bottom: 36px;">
+        <div class="wf2-name">James O'Reilly<span class="ann">①</span></div>
+        <div class="wf2-role">Product Manager — currently based in Dublin</div>
+        <div class="wf2-wit">Available for the right opportunity. Unavailable for bad ones.</div>
+      </div>
+
+      <!-- Inline nav -->
+      <nav class="wf2-inline-nav">
+        <a onclick="wf2Scroll('wf2-about')">About</a>
+        <a onclick="wf2Scroll('wf2-work')">Work</a>
+        <a onclick="wf2Scroll('wf2-projects')">Projects</a>
+        <a onclick="wf2Scroll('wf2-contact')">Contact</a>
+        <a href="#">CV (PDF)</a>
+      </nav>
+
+      <!-- About -->
+      <div class="wf2-sect" id="wf2-about">
+        <div class="wf2-sect-label">About</div>
+        <p class="wf2-body">I'm a product manager with eight years of experience building software products in healthcare, fintech, and B2B SaaS. I've worked at scrappy startups where I wrote PRDs at midnight and large orgs where I learned the art of alignment.<span class="ann">②</span></p>
+        <div class="wf2-aside">"The best PM I've worked with" — at least two people who weren't my mum.</div>
+        <p class="wf2-body">I care about clear thinking, well-timed decisions, and shipping things people actually use. I'm currently open to senior individual contributor and leadership roles.</p>
+      </div>
+
+      <!-- Work -->
+      <div class="wf2-sect" id="wf2-work">
+        <div class="wf2-sect-label">Work History<span class="ann">③</span></div>
+        <div class="wf2-work-item">
+          <div class="wf2-work-top" onclick="toggleWf2Detail('wf2d1')">
+            <div class="wf2-work-left">
+              <div class="wf2-work-role">Senior Product Manager</div>
+              <div class="wf2-work-co">Acme Health Tech</div>
+              <div class="wf2-toggle" id="wf2d1-toggle">+ expand</div>
+            </div>
+            <div class="wf2-work-date">2021 — Present</div>
+          </div>
+          <div class="wf2-work-detail" id="wf2d1">
+            <p>Led the scheduling platform serving 2M+ users across 40 health systems. Grew activation from 42% to 71%. Reduced no-shows by 28%.</p>
+            <ul>
+              <li>Rebuilt booking confirmation flow — biggest single UX win in 3 years</li>
+              <li>Managed a cross-functional team of 18 across 3 time zones</li>
+              <li>Grew revenue from $1.8M to $4.4M ARR</li>
+            </ul>
+          </div>
+        </div>
+        <div class="wf2-work-item">
+          <div class="wf2-work-top" onclick="toggleWf2Detail('wf2d2')">
+            <div class="wf2-work-left">
+              <div class="wf2-work-role">Product Manager</div>
+              <div class="wf2-work-co">FinFlow (Series B)</div>
+              <div class="wf2-toggle" id="wf2d2-toggle">+ expand</div>
+            </div>
+            <div class="wf2-work-date">2018 — 2021</div>
+          </div>
+          <div class="wf2-work-detail" id="wf2d2">
+            <p>Core payments product from 0→1, working directly with founding team. Launched to $3.2M ARR in year one.</p>
+            <ul>
+              <li>Defined roadmap across 3 product lines</li>
+              <li>Built the compliance instrumentation that got us SOC 2 Type II</li>
+            </ul>
+          </div>
+        </div>
+        <div class="wf2-work-item">
+          <div class="wf2-work-top" onclick="toggleWf2Detail('wf2d3')">
+            <div class="wf2-work-left">
+              <div class="wf2-work-role">Associate Product Manager</div>
+              <div class="wf2-work-co">BigCo Enterprise</div>
+              <div class="wf2-toggle" id="wf2d3-toggle">+ expand</div>
+            </div>
+            <div class="wf2-work-date">2016 — 2018</div>
+          </div>
+          <div class="wf2-work-detail" id="wf2d3">
+            <p>Rotational PM programme — analytics, mobile, and platform teams. Built mobile analytics dashboard adopted by 8,000 enterprise users.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Projects -->
+      <div class="wf2-sect" id="wf2-projects">
+        <div class="wf2-sect-label">Selected Projects</div>
+        <div class="wf2-proj-grid">
+          <div class="wf2-proj">
+            <div class="wf2-proj-name">HealthScheduler 2.0</div>
+            <p class="wf2-proj-desc">Booking flow redesign that cut scheduling time from 7 min to 2.5 min. 28% no-show reduction.</p>
+            <div class="wf2-proj-tags"><span class="wf2-proj-tag">Healthcare</span><span class="wf2-proj-tag">UX Research</span><span class="wf2-proj-tag">0-to-1</span></div>
+          </div>
+          <div class="wf2-proj">
+            <div class="wf2-proj-name">FinFlow Payments</div>
+            <p class="wf2-proj-desc">Built from scratch. $3.2M ARR year one, 99.97% uptime SLA maintained for 3 years.</p>
+            <div class="wf2-proj-tags"><span class="wf2-proj-tag">Fintech</span><span class="wf2-proj-tag">Payments</span><span class="wf2-proj-tag">B2B</span></div>
+          </div>
+          <div class="wf2-proj">
+            <div class="wf2-proj-name">Enterprise Analytics</div>
+            <p class="wf2-proj-desc">Self-serve dashboard replacing 3 legacy tools. Adopted by 8K+ users within 90 days.</p>
+            <div class="wf2-proj-tags"><span class="wf2-proj-tag">B2B SaaS</span><span class="wf2-proj-tag">Analytics</span></div>
+          </div>
+          <div class="wf2-proj">
+            <div class="wf2-proj-name">This Website</div>
+            <p class="wf2-proj-desc">A personal site that doesn't take itself too seriously. Shipped it, which is the hardest part.</p>
+            <div class="wf2-proj-tags"><span class="wf2-proj-tag">HTML/CSS</span><span class="wf2-proj-tag">Meta</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact -->
+      <div class="wf2-sect" id="wf2-contact">
+        <div class="wf2-sect-label">Contact<span class="ann">④</span></div>
+        <p class="wf2-body" style="font-size: 14px; margin-bottom: 20px;">I'm easy to reach, hard to ignore, and guaranteed to respond within a business day (usually less).</p>
+        <div class="wf2-contact-row"><span class="wf2-contact-label">Email</span><span class="wf2-contact-val">james@example.com</span></div>
+        <div class="wf2-contact-row"><span class="wf2-contact-label">LinkedIn</span><span class="wf2-contact-val">linkedin.com/in/jamesoreilly</span></div>
+        <div class="wf2-contact-row"><span class="wf2-contact-label">GitHub</span><span class="wf2-contact-val">github.com/jamesoreilly</span></div>
+        <div class="wf2-contact-row"><span class="wf2-contact-label">CV</span><span class="wf2-contact-val">Download PDF</span></div>
+      </div>
+
+      <!-- Footer -->
+      <div style="border-top: 1px solid #eee; padding-top: 20px; margin-top: 40px; font-size: 11px; color: #bbb; display: flex; justify-content: space-between;">
+        <span>© 2026 James O'Reilly</span>
+        <span>No cookies. No trackers. No regrets.</span>
+      </div>
+    </div>
+  </div><!-- /wireframe-wrap -->
+
+  <div class="annotations">
+    <div class="ann-row"><div class="ann-num">①</div><div class="ann-text">No logo, no brand — your name is the identity. Clean, confident, consistent with the lusmo.re aesthetic.</div></div>
+    <div class="ann-row"><div class="ann-num">②</div><div class="ann-text">Prose-forward writing allows personality and wit to emerge naturally. Employers read this, not just scan it.</div></div>
+    <div class="ann-row"><div class="ann-num">③</div><div class="ann-text">Work items are collapsed by default — employer scans role titles and dates at a glance, clicks to expand what interests them. Strong discoverability pattern.</div></div>
+    <div class="ann-row"><div class="ann-num">④</div><div class="ann-text">Contact is reduced to the essentials — no form friction. Email link is the primary CTA; form is optional complexity removed.</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     OPTION 3: HUB & SPOKE
+     ══════════════════════════════════════════════════════ -->
+<div id="opt3" class="option-panel">
+  <div class="option-header">
+    <div class="option-title">Option 3: Hub &amp; Spoke</div>
+    <div class="option-tagline">A tile-based landing acts as a visual directory — employer picks their path rather than scrolling through everything.</div>
+  </div>
+
+  <div class="wireframe-wrap">
+    <!-- Landing -->
+    <div class="wf3-landing">
+      <div class="wf3-name">James O'Reilly<span class="ann">①</span></div>
+      <div class="wf3-tagline">Senior Product Manager · Dublin</div>
+      <div class="wf3-wit">8 years turning good problems into shipped products.</div>
+      <div class="wf3-tiles">
+        <div class="wf3-tile" id="tile-about" onclick="openPane('pane-about', 'tile-about')">
+          <div class="wf3-tile-num">01</div>
+          <div class="wf3-tile-name">Who I Am</div>
+          <div class="wf3-tile-teaser">Background, values, what I'm looking for next</div>
+        </div>
+        <div class="wf3-tile" id="tile-work" onclick="openPane('pane-work', 'tile-work')">
+          <div class="wf3-tile-num">02</div>
+          <div class="wf3-tile-name">Work History</div>
+          <div class="wf3-tile-teaser">8 years across healthtech, fintech, and B2B SaaS</div>
+        </div>
+        <div class="wf3-tile" id="tile-projects" onclick="openPane('pane-projects', 'tile-projects')">
+          <div class="wf3-tile-num">03</div>
+          <div class="wf3-tile-name">What I've Built</div>
+          <div class="wf3-tile-teaser">Selected projects with context and outcomes</div>
+        </div>
+        <div class="wf3-tile" id="tile-contact" onclick="openPane('pane-contact', 'tile-contact')">
+          <div class="wf3-tile-num">04</div>
+          <div class="wf3-tile-name">Get in Touch</div>
+          <div class="wf3-tile-teaser">Let's talk — I'm easy to reach</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pane: Who I Am -->
+    <div class="wf3-pane" id="pane-about">
+      <div class="wf3-pane-hd">
+        <div class="wf3-pane-title">Who I Am</div>
+        <span class="wf3-close" onclick="closePane('pane-about', 'tile-about')">✕ close</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 32px;">
+        <div>
+          <p style="font-size: 14px; color: #444; line-height: 1.75; margin-bottom: 14px;">I'm a product manager with eight years of experience building software in healthcare, fintech, and B2B SaaS. I've done the startup thing (two of them), the enterprise thing, and the in-between thing.</p>
+          <p style="font-size: 14px; color: #444; line-height: 1.75;">I care about clear thinking, well-timed decisions, and building teams that trust each other. Currently open to senior IC and director-level roles.</p>
+        </div>
+        <div>
+          <p style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; color: #666;">Core Skills</p>
+          <div class="wf-skills" style="grid-template-columns: 1fr 1fr;">
+            <div class="wf-skill">Product Strategy</div>
+            <div class="wf-skill">Leadership</div>
+            <div class="wf-skill">Analytics</div>
+            <div class="wf-skill">Go-to-Market</div>
+            <div class="wf-skill">Roadmapping</div>
+            <div class="wf-skill">Stakeholders</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pane: Work History -->
+    <div class="wf3-pane" id="pane-work">
+      <div class="wf3-pane-hd">
+        <div class="wf3-pane-title">Work History</div>
+        <span class="wf3-close" onclick="closePane('pane-work', 'tile-work')">✕ close</span>
+      </div>
+      <div class="wf-timeline">
+        <div class="wf-tl-item">
+          <div class="wf-tl-dot"></div>
+          <div class="wf-tl-header">
+            <div><div class="wf-tl-role">Senior Product Manager</div><div class="wf-tl-co">Acme Health Tech</div></div>
+            <span class="wf-tl-date">2021 — Present</span>
+          </div>
+          <p class="wf-tl-desc">Patient scheduling platform · 2M+ users · 40 health systems</p>
+          <ul class="wf-tl-list">
+            <li>Activation rate 42% → 71% in 6 months</li><li>No-show rate −28%</li><li>ARR $1.8M → $4.4M</li>
+          </ul>
+        </div>
+        <div class="wf-tl-item">
+          <div class="wf-tl-dot"></div>
+          <div class="wf-tl-header">
+            <div><div class="wf-tl-role">Product Manager</div><div class="wf-tl-co">FinFlow (Series B)</div></div>
+            <span class="wf-tl-date">2018 — 2021</span>
+          </div>
+          <p class="wf-tl-desc">0→1 core payments product · $3.2M ARR year one</p>
+          <ul class="wf-tl-list"><li>Launched SOC 2 Type II compliance in 90 days</li><li>Roadmap across 3 product lines</li></ul>
+        </div>
+        <div class="wf-tl-item">
+          <div class="wf-tl-dot"></div>
+          <div class="wf-tl-header">
+            <div><div class="wf-tl-role">Associate Product Manager</div><div class="wf-tl-co">BigCo Enterprise</div></div>
+            <span class="wf-tl-date">2016 — 2018</span>
+          </div>
+          <p class="wf-tl-desc">Rotational programme · analytics, mobile, platform teams</p>
+          <ul class="wf-tl-list"><li>Mobile analytics dashboard · 8K+ enterprise users</li></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pane: Projects -->
+    <div class="wf3-pane" id="pane-projects">
+      <div class="wf3-pane-hd">
+        <div class="wf3-pane-title">What I've Built</div>
+        <span class="wf3-close" onclick="closePane('pane-projects', 'tile-projects')">✕ close</span>
+      </div>
+      <div class="wf-cards">
+        <div class="wf-card">
+          <div class="wf-card-img">[ Screenshot ]</div>
+          <div class="wf-card-body">
+            <div class="wf-card-title">HealthScheduler 2.0</div>
+            <p class="wf-card-desc">Booking flow redesign: 7 min → 2.5 min. No-show rate −28%.</p>
+            <div class="wf-tags"><span class="wf-tag">Healthcare</span><span class="wf-tag">UX Research</span></div>
+          </div>
+        </div>
+        <div class="wf-card">
+          <div class="wf-card-img">[ Screenshot ]</div>
+          <div class="wf-card-body">
+            <div class="wf-card-title">FinFlow Payments</div>
+            <p class="wf-card-desc">Core payments 0→1. $3.2M ARR year one, 99.97% uptime.</p>
+            <div class="wf-tags"><span class="wf-tag">Fintech</span><span class="wf-tag">B2B</span></div>
+          </div>
+        </div>
+        <div class="wf-card">
+          <div class="wf-card-img">[ Screenshot ]</div>
+          <div class="wf-card-body">
+            <div class="wf-card-title">Enterprise Analytics</div>
+            <p class="wf-card-desc">Replaced 3 legacy tools. 8K+ users adopted in 90 days.</p>
+            <div class="wf-tags"><span class="wf-tag">B2B SaaS</span><span class="wf-tag">Analytics</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pane: Contact -->
+    <div class="wf3-pane" id="pane-contact">
+      <div class="wf3-pane-hd">
+        <div class="wf3-pane-title">Get in Touch</div>
+        <span class="wf3-close" onclick="closePane('pane-contact', 'tile-contact')">✕ close</span>
+      </div>
+      <p style="font-size: 14px; color: #555; margin-bottom: 24px; max-width: 500px; line-height: 1.6;">I'm easy to reach and always up for a conversation — about product, opportunities, or whether it's worth reading my full CV (it is).</p>
+      <div class="wf4-contact-list" style="max-width: 420px;">
+        <li class="wf4-contact-list" style="display: flex; gap: 14px; padding: 10px 0; border-bottom: 1px solid #eee; list-style: none;"><span class="wf4-contact-key">Email</span><span class="wf4-contact-val">james@example.com</span></li>
+        <li style="display: flex; gap: 14px; padding: 10px 0; border-bottom: 1px solid #eee; list-style: none;"><span class="wf4-contact-key" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;min-width:80px;color:#666;">LinkedIn</span><span class="wf4-contact-val" style="font-size:13px;cursor:pointer;">linkedin.com/in/jamesoreilly</span></li>
+        <li style="display: flex; gap: 14px; padding: 10px 0; list-style: none;"><span class="wf4-contact-key" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;min-width:80px;color:#666;">CV</span><span class="wf4-contact-val" style="font-size:13px;cursor:pointer;">Download PDF →</span></li>
+      </div>
+    </div>
+
+    <!-- Empty state when nothing is open -->
+    <div id="wf3-empty" style="padding: 32px 40px; border-top: 1px solid #eee; text-align: center; color: #bbb; font-size: 13px; font-style: italic;">
+      Select a section above to explore ↑<span class="ann">②</span>
+    </div>
+
+    <div class="wf-footer">
+      <span>© 2026 James O'Reilly</span>
+      <span style="font-size: 10px; color: #666;">No trackers · No BS</span>
+    </div>
+  </div>
+
+  <div class="annotations">
+    <div class="ann-row"><div class="ann-num">①</div><div class="ann-text">Landing tiles act as a visual sitemap — employer immediately sees the 4 content areas without any scrolling required. Strong discoverability signal.</div></div>
+    <div class="ann-row"><div class="ann-num">②</div><div class="ann-text">Content panes expand below the tiles in-place (no page navigation). Employer keeps context of the "directory" while reading. Click close to return.</div></div>
+    <div class="ann-row"><div class="ann-num">③</div><div class="ann-text">Tile teasers set expectations — employer knows what they'll find before clicking. Reduces wasted time on irrelevant sections.</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     OPTION 4: ACCORDION / SCANNABLE
+     ══════════════════════════════════════════════════════ -->
+<div id="opt4" class="option-panel">
+  <div class="option-header">
+    <div class="option-title">Option 4: Accordion</div>
+    <div class="option-tagline">Everything collapsed at the top: employer scans your full story in 10 seconds, then expands exactly what matters to them.</div>
+  </div>
+
+  <div class="wireframe-wrap">
+    <!-- Identity header -->
+    <div class="wf4-header">
+      <div class="wf4-name">James O'Reilly</div>
+      <div class="wf4-role">Senior Product Manager · Dublin · Open to new roles</div>
+      <p class="wf4-bio">Eight years helping teams build products people actually use — across healthtech, fintech, and B2B SaaS. Good at ambiguity. Better at shipping.<span class="ann">①</span></p>
+      <div class="wf4-meta-row">
+        <span class="wf4-pill primary">Download CV</span>
+        <span class="wf4-pill">LinkedIn →</span>
+        <span class="wf4-pill">GitHub →</span>
+        <span class="wf4-pill">Email →</span>
+      </div>
+    </div>
+
+    <!-- Accordion: Work -->
+    <div class="wf4-acc">
+      <div class="wf4-acc-hd" onclick="toggleAcc('acc-work')">
+        <div class="wf4-acc-left">
+          <span class="wf4-acc-title">Work History</span>
+          <span class="wf4-acc-summary">Senior PM at Acme · PM at FinFlow · APM at BigCo</span>
+        </div>
+        <div class="wf4-acc-right">
+          <span class="wf4-acc-count">3 roles · 8 yrs</span>
+          <span class="wf4-acc-arrow" id="arr-acc-work">›</span>
+        </div>
+      </div>
+      <div class="wf4-acc-body" id="acc-work">
+        <ul class="wf4-scan-list">
+          <li class="wf4-scan-item" onclick="toggleSubDetail('sd-role1')">
+            <div>
+              <div class="wf4-scan-main">Senior Product Manager</div>
+              <div class="wf4-scan-sub">Acme Health Tech · Patient scheduling · 2M+ users</div>
+              <div class="wf4-sub-detail" id="sd-role1">
+                <p>Led strategy for the scheduling platform serving 40 health systems. Grew activation 42%→71%, ARR $1.8M→$4.4M, no-shows −28%.</p>
+                <ul>
+                  <li>Rebuilt booking confirmation flow — biggest UX win in 3 years</li>
+                  <li>Managed cross-functional team of 18 across 3 time zones</li>
+                  <li>Grew revenue from $1.8M to $4.4M ARR</li>
+                </ul>
+              </div>
+            </div>
+            <div class="wf4-scan-date">2021 — Present</div>
+          </li>
+          <li class="wf4-scan-item" onclick="toggleSubDetail('sd-role2')">
+            <div>
+              <div class="wf4-scan-main">Product Manager</div>
+              <div class="wf4-scan-sub">FinFlow · Core payments 0→1 · $3.2M ARR</div>
+              <div class="wf4-sub-detail" id="sd-role2">
+                <p>Built the core payments product from scratch, working directly with the CTO and founding team. Launched to $3.2M ARR in year one.</p>
+                <ul>
+                  <li>Roadmap ownership across 3 product lines</li>
+                  <li>SOC 2 Type II compliance shipped in 90 days</li>
+                </ul>
+              </div>
+            </div>
+            <div class="wf4-scan-date">2018 — 2021</div>
+          </li>
+          <li class="wf4-scan-item" onclick="toggleSubDetail('sd-role3')">
+            <div>
+              <div class="wf4-scan-main">Associate Product Manager</div>
+              <div class="wf4-scan-sub">BigCo Enterprise · Rotational · Analytics &amp; Mobile</div>
+              <div class="wf4-sub-detail" id="sd-role3">
+                <p>Rotational PM programme — analytics, mobile, and platform. Built mobile analytics dashboard adopted by 8K+ enterprise users.</p>
+              </div>
+            </div>
+            <div class="wf4-scan-date">2016 — 2018</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Accordion: Projects -->
+    <div class="wf4-acc">
+      <div class="wf4-acc-hd" onclick="toggleAcc('acc-projects')">
+        <div class="wf4-acc-left">
+          <span class="wf4-acc-title">Projects</span>
+          <span class="wf4-acc-summary">HealthScheduler · FinFlow Payments · Enterprise Analytics</span>
+        </div>
+        <div class="wf4-acc-right">
+          <span class="wf4-acc-count">3 featured</span>
+          <span class="wf4-acc-arrow" id="arr-acc-projects">›</span>
+        </div>
+      </div>
+      <div class="wf4-acc-body" id="acc-projects">
+        <ul class="wf4-scan-list">
+          <li class="wf4-scan-item" onclick="toggleSubDetail('sd-proj1')">
+            <div>
+              <div class="wf4-scan-main">HealthScheduler 2.0</div>
+              <div class="wf4-scan-sub">Booking flow redesign · 7 min → 2.5 min · −28% no-shows</div>
+              <div class="wf4-sub-detail" id="sd-proj1">
+                <p>End-to-end UX redesign of the appointment booking flow. User research revealed 60% of drop-offs happened on the confirmation step. Rebuilt it from scratch in 6 weeks.</p>
+                <ul>
+                  <li>Scheduling time 7 min → 2.5 min (64% reduction)</li>
+                  <li>No-show rate dropped 28% within 90 days of launch</li>
+                  <li>NPS improved from 38 to 61</li>
+                </ul>
+              </div>
+            </div>
+            <div class="wf4-scan-date">2022</div>
+          </li>
+          <li class="wf4-scan-item" onclick="toggleSubDetail('sd-proj2')">
+            <div>
+              <div class="wf4-scan-main">FinFlow Core Payments</div>
+              <div class="wf4-scan-sub">0→1 payments product · $3.2M ARR · 99.97% uptime</div>
+              <div class="wf4-sub-detail" id="sd-proj2">
+                <p>Built the payments product from a whiteboard conversation to $3.2M ARR in one year. Worked directly with CTO, design, and compliance.</p>
+              </div>
+            </div>
+            <div class="wf4-scan-date">2019–2020</div>
+          </li>
+          <li class="wf4-scan-item" onclick="toggleSubDetail('sd-proj3')">
+            <div>
+              <div class="wf4-scan-main">Enterprise Analytics Dashboard</div>
+              <div class="wf4-scan-sub">Replaced 3 legacy tools · 8K+ users in 90 days</div>
+              <div class="wf4-sub-detail" id="sd-proj3">
+                <p>Self-serve analytics suite for large enterprise teams. Replaced three separate legacy tools with one unified dashboard.</p>
+              </div>
+            </div>
+            <div class="wf4-scan-date">2017–2018</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Accordion: About -->
+    <div class="wf4-acc">
+      <div class="wf4-acc-hd" onclick="toggleAcc('acc-about')">
+        <div class="wf4-acc-left">
+          <span class="wf4-acc-title">About</span>
+          <span class="wf4-acc-summary">Background, values, what I care about</span>
+        </div>
+        <div class="wf4-acc-right">
+          <span class="wf4-acc-arrow" id="arr-acc-about">›</span>
+        </div>
+      </div>
+      <div class="wf4-acc-body" id="acc-about">
+        <div class="wf4-about-body">
+          <p>I've spent eight years building software products across three industries. I've worked at scrappy startups where I wrote PRDs at midnight and at large organisations where alignment was the hardest feature to ship.</p>
+          <p>I care about clear thinking, candid conversations, and shipping things that actually matter to users. I try to be the PM who makes everyone else's job easier, not harder.</p>
+          <p style="font-size: 12px; color: #888; font-style: italic;">Favourite phrase: "So what's the actual problem we're solving?" Least favourite: "Let's double-click on that."</p>
+          <div class="wf4-competencies">
+            <span class="wf4-comp">Product Strategy</span>
+            <span class="wf4-comp">Team Leadership</span>
+            <span class="wf4-comp">Data &amp; Analytics</span>
+            <span class="wf4-comp">Go-to-Market</span>
+            <span class="wf4-comp">Roadmapping</span>
+            <span class="wf4-comp">Stakeholder Mgmt</span>
+            <span class="wf4-comp">User Research</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accordion: Contact -->
+    <div class="wf4-acc" style="border-bottom: none;">
+      <div class="wf4-acc-hd" onclick="toggleAcc('acc-contact')">
+        <div class="wf4-acc-left">
+          <span class="wf4-acc-title">Get in Touch</span>
+          <span class="wf4-acc-summary">james@example.com · Response within 24h</span>
+        </div>
+        <div class="wf4-acc-right">
+          <span class="wf4-acc-arrow" id="arr-acc-contact">›</span>
+        </div>
+      </div>
+      <div class="wf4-acc-body" id="acc-contact">
+        <p style="font-size: 13px; color: #666; margin-bottom: 16px; line-height: 1.65;">Open to senior IC and leadership roles, advisory conversations, and the occasional coffee chat — if you have an interesting problem, I'm in.</p>
+        <ul class="wf4-contact-list">
+          <li><span class="wf4-contact-key">Email</span><span class="wf4-contact-val">james@example.com</span></li>
+          <li><span class="wf4-contact-key">LinkedIn</span><span class="wf4-contact-val">linkedin.com/in/jamesoreilly</span></li>
+          <li><span class="wf4-contact-key">GitHub</span><span class="wf4-contact-val">github.com/jamesoreilly</span></li>
+          <li><span class="wf4-contact-key">CV</span><span class="wf4-contact-val">Download PDF →</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="wf-footer">
+      <span>© 2026 James O'Reilly</span>
+      <span style="font-size: 10px; color: #555;">No cookies · Built with care</span>
+    </div>
+  </div>
+
+  <div class="annotations">
+    <div class="ann-row"><div class="ann-num">①</div><div class="ann-text">Identity block loads instantly: name, role, city, availability, and 2-line bio. Employer knows who you are in under 3 seconds. CV download is a primary CTA above the fold.</div></div>
+    <div class="ann-row"><div class="ann-num">②</div><div class="ann-text">Accordion headers show scannable summaries — employer reads "Senior PM at Acme · PM at FinFlow" without expanding. This is the key discoverability win.</div></div>
+    <div class="ann-row"><div class="ann-num">③</div><div class="ann-text">Each role expands inline with details + metrics. Employer expands only what's relevant to their context. Reduces cognitive load vs. reading everything.</div></div>
+    <div class="ann-row"><div class="ann-num">④</div><div class="ann-text">Contact accordion summary previews the email address — employer might not even need to open it to find what they want.</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SUMMARY
+     ══════════════════════════════════════════════════════ -->
+<div id="summary" class="option-panel">
+  <div class="summary-wrap">
+    <h2>Summary</h2>
+    <table class="sum-table">
+      <thead>
+        <tr>
+          <th style="width: 160px;">Option</th>
+          <th>Approach</th>
+          <th style="width: 140px;">Discoverability</th>
+          <th style="width: 100px;">Wit/Personality</th>
+          <th style="width: 100px;">Simplicity</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1: Safe Option</strong></td>
+          <td>Standard single-page scroll: hero, timeline, cards, contact. Familiar and polished, but requires scrolling through everything to get anywhere.</td>
+          <td><span class="stars">★★★☆☆</span></td>
+          <td><span class="stars">★★★☆☆</span></td>
+          <td><span class="stars">★★★☆☆</span></td>
+        </tr>
+        <tr>
+          <td><strong>2: Text-First</strong></td>
+          <td>Prose-forward, minimal chrome — wit lives in the writing. Work items collapse by default. Very clean. Closest to lusmo.re aesthetic.</td>
+          <td><span class="stars">★★★★☆</span></td>
+          <td><span class="stars">★★★★★</span></td>
+          <td><span class="stars">★★★★★</span></td>
+        </tr>
+        <tr>
+          <td><strong>3: Hub &amp; Spoke</strong></td>
+          <td>Tile directory on landing — employer picks their section. Content expands inline. Highest visual clarity on structure, adds a navigation step.</td>
+          <td><span class="stars">★★★★☆</span></td>
+          <td><span class="stars">★★★☆☆</span></td>
+          <td><span class="stars">★★★☆☆</span></td>
+        </tr>
+        <tr class="rec-row">
+          <td><strong>4: Accordion ★</strong></td>
+          <td>Identity + 2-line bio above the fold, then all sections scannable without scrolling. Employer reads role summaries in 10 seconds, expands what they need.</td>
+          <td><span class="stars">★★★★★</span></td>
+          <td><span class="stars">★★★★☆</span></td>
+          <td><span class="stars">★★★★☆</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="rec-block">
+      <strong>Recommended: Option 4 — Accordion</strong>
+      Option 4 best serves your discoverability goal: a hiring manager lands on the page and can scan your entire career in under 10 seconds — role titles, companies, and key metrics are all visible in the accordion headers before clicking anything. The identity block puts your availability and CV download above the fold where they belong. Wit is still present in the bio and micro-copy, but the structure never gets in the way of the content. It's simple, functional, and has just enough personality — exactly what you described.
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Tab switching ──
+  function showTab(id) {
+    document.querySelectorAll('.option-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    const idx = ['opt1','opt2','opt3','opt4','summary'].indexOf(id);
+    document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── Option 2: Expandable work items ──
+  function toggleWf2Detail(id) {
+    const el = document.getElementById(id);
+    const toggle = document.getElementById(id + '-toggle');
+    const isOpen = el.classList.contains('open');
+    el.classList.toggle('open');
+    toggle.textContent = isOpen ? '+ expand' : '− collapse';
+  }
+
+  // ── Option 3: Hub & Spoke panes ──
+  function openPane(paneId, tileId) {
+    const wasActive = document.getElementById(tileId).classList.contains('active-tile');
+    // Close all
+    document.querySelectorAll('.wf3-pane').forEach(p => p.classList.remove('open'));
+    document.querySelectorAll('.wf3-tile').forEach(t => t.classList.remove('active-tile'));
+    document.getElementById('wf3-empty').style.display = 'block';
+
+    if (!wasActive) {
+      document.getElementById(paneId).classList.add('open');
+      document.getElementById(tileId).classList.add('active-tile');
+      document.getElementById('wf3-empty').style.display = 'none';
+    }
+  }
+  function closePane(paneId, tileId) {
+    document.getElementById(paneId).classList.remove('open');
+    document.getElementById(tileId).classList.remove('active-tile');
+    document.getElementById('wf3-empty').style.display = 'block';
+  }
+
+  // ── Option 4: Accordions ──
+  function toggleAcc(id) {
+    const body = document.getElementById(id);
+    const arrow = document.getElementById('arr-' + id);
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    arrow.classList.toggle('open', !isOpen);
+  }
+
+  // ── Option 4: Sub-details (role/project expand) ──
+  function toggleSubDetail(id) {
+    const el = document.getElementById(id);
+    el.classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>
