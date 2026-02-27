@@ -24,6 +24,7 @@
   let isOpen = false;
   let messages = []; // { role: 'user'|'assistant', content: string }
   let isLoading = false;
+  let sessionId = null; // generated on first message, ties API calls into one conversation record
 
   // ── DOM refs ──
   let root, panel, messagesEl, inputEl, sendBtn, welcomeEl;
@@ -536,6 +537,8 @@
     if (messages.length === 0) {
       welcomeEl.style.display = 'none';
       messagesEl.style.display = 'flex';
+      // Generate a session ID for this conversation
+      sessionId = Date.now().toString(36) + Math.random().toString(36).slice(2);
     }
 
     // Add user message
@@ -555,7 +558,7 @@
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: apiMessages }),
+        body: JSON.stringify({ messages: apiMessages, sessionId }),
       });
 
       if (!response.ok) throw new Error('API error');

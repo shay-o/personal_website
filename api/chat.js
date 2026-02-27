@@ -154,6 +154,45 @@ RULES:
 RESUME DATA:
 ${RESUME_DATA}`;
 
+// ── Airtable logging ──
+// Upserts one record per conversation (keyed by sessionId).
+// Requires env vars: AIRTABLE_API_KEY, AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME
+async function logToAirtable(sessionId, userMessages, reply) {
+  const { AIRTABLE_API_KEY, AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME } = process.env;
+  if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID || !AIRTABLE_TABLE_NAME) return;
+
+  // Build a readable transcript from the current full conversation
+  const allMessages = [...userMessages, { role: 'assistant', content: reply }];
+  const transcript = allMessages
+    .map(m => `[${m.role === 'user' ? 'Visitor' : "Shay's AI"}]\n${m.content}`)
+    .join('\n\n');
+
+  const userTurns = userMessages.filter(m => m.role === 'user');
+  const firstQuestion = userTurns[0]?.content ?? '';
+  const now = new Date().toISOString();
+
+  // Upsert by Session ID — Airtable creates or updates the matching record
+  await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_NAME)}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+    },
+    body: JSON.stringify({
+      performUpsert: { fieldsToMergeOn: ['Session ID'] },
+      records: [{
+        fields: {
+          'Session ID': sessionId,
+          'First Question': firstQuestion.slice(0, 255),
+          'Message Count': userTurns.length,
+          'Last Updated': now,
+          'Transcript': transcript,
+        },
+      }],
+    }),
+  });
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -165,7 +204,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { messages } = req.body;
+    const { messages, sessionId } = req.body;
 
     if (!messages || !Array.isArray(messages)) {
       return res.status(400).json({ error: 'messages array is required' });
@@ -201,6 +240,15 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
+    const reply = data.choices?.[0]?.message?.content;
+
+    // Log conversation to Airtable (non-blocking — don't delay the response)
+    if (reply && sessionId) {
+      logToAirtable(sessionId, userMessages, reply).catch(err =>
+        console.error('Airtable logging error:', err)
+      );
+    }
+
     return res.status(200).json(data);
 
   } catch (err) {
