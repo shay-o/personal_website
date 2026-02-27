@@ -6,7 +6,7 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
 // ===================================
 // Auto-open all sections on load
 // ===================================
-['section-work', 'section-projects', 'section-about'].forEach(id => {
+['section-work', 'section-projects', 'section-education', 'section-about'].forEach(id => {
   const section = document.getElementById(id);
   if (!section) return;
   const header = section.querySelector('.acc-header');
