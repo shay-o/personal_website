@@ -3,6 +3,7 @@
 **Live site:** shayoreilly.net (GitHub Pages — DNS not yet configured)
 
 ## Current tasks
+- [x] Airtable logging — working. Root cause was fire-and-forget pattern (`logToAirtable().catch()`) being killed by Vercel before completing; fixed by awaiting the calls before returning the response.
 - [ ] Configure GitHub Pages + shayoreilly.net custom domain (Settings → Pages → set source to main, then add CNAME DNS record)
 - [x] Replace LinkedIn placeholder URL → https://www.linkedin.com/in/shayoreilly/
 - [x] Replace GitHub placeholder URL → https://github.com/shay-o
@@ -13,12 +14,22 @@
 - Add volunteer section: SF Fire Dept EMS 6 (Feb–Oct 2024), Salesforce donor data work (Oct–Nov 2016)
 - Add education section: Reed College BA History, UNC Kenan-Flagler MBA, IDEO Design Thinking, Scrum cert
 - Automate Medicare report copy from AI-Medicare-Advice-Evaluator repo (GitHub Actions option C)
-- Consider removing GitHub header link if not actively using GitHub publicly
+- Add a link to my resume. Likely in PDF form.
+- Chatbot: What am I passionate about?
 
 ## Project structure
 - `index.html` / `styles.css` / `script.js` — the site
+- `chat-data.js` — chat widget config (suggested questions, header text); system prompt + resume data live server-side
+- `chat-widget.js` — chat UI widget (vanilla JS, no dependencies)
+- `api/chat.js` — Vercel serverless function: OpenRouter proxy + Airtable logging; holds system prompt and full resume data
 - `projects/AI-Medicare-Advice-Evaluator/` — copied report files (overview.html, matrix_report.html)
 - `wireframe/` — design exploration files, local only (not pushed to GitHub)
+
+## Chat widget
+- Deployed via Vercel (site was migrated from GitHub Pages to Vercel)
+- Uses OpenRouter → `anthropic/claude-sonnet-4` model
+- Requires Vercel env vars: `OPENROUTER_API_KEY`, `AIRTABLE_API_KEY`, `AIRTABLE_BASE_ID`, `AIRTABLE_TABLE_NAME`, `AIRTABLE_GAPS_TABLE_NAME`
+- Airtable table fields (case-sensitive): Session ID, First Question, Message Count, Last Updated, Transcript
 
 ## Key decisions made
 - Accordion layout (section-level + nested role/project expand)
