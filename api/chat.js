@@ -174,7 +174,7 @@ async function logToAirtable(sessionId, userMessages, reply) {
   const now = new Date().toISOString();
 
   // Upsert by Session ID — Airtable creates or updates the matching record
-  await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_NAME)}`, {
+  const res = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_NAME)}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -193,6 +193,10 @@ async function logToAirtable(sessionId, userMessages, reply) {
       }],
     }),
   });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Airtable ${res.status}: ${body}`);
+  }
 }
 
 // ── Gap logging ──
@@ -202,7 +206,7 @@ async function logGapToAirtable(sessionId, question) {
   const { AIRTABLE_API_KEY, AIRTABLE_BASE_ID, AIRTABLE_GAPS_TABLE_NAME } = process.env;
   if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID || !AIRTABLE_GAPS_TABLE_NAME) return;
 
-  await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_GAPS_TABLE_NAME)}`, {
+  const res = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_GAPS_TABLE_NAME)}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -218,6 +222,10 @@ async function logGapToAirtable(sessionId, question) {
       }],
     }),
   });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Airtable gaps ${res.status}: ${body}`);
+  }
 }
 
 export default async function handler(req, res) {
