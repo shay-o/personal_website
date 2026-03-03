@@ -286,6 +286,9 @@ export default async function handler(req, res) {
         data.choices[0].message.content = reply;
       }
 
+      const { AIRTABLE_API_KEY, AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME } = process.env;
+      console.log('Airtable debug — sessionId:', !!sessionId, 'key:', !!AIRTABLE_API_KEY, 'base:', !!AIRTABLE_BASE_ID, 'table:', !!AIRTABLE_TABLE_NAME);
+
       if (sessionId) {
         const currentQuestion = userMessages.filter(m => m.role === 'user').at(-1)?.content ?? '';
         // Log conversation (non-blocking)
