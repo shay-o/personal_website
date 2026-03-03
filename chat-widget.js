@@ -404,7 +404,7 @@
     const config = getConfig();
     root.innerHTML = `
       <div class="cw-bubble" id="cw-bubble">
-        <div class="cw-bubble-label">Chat with Shay's AI assistant</div>
+        <div class="cw-bubble-label">Chat to learn more about my experience.</div>
         <div class="cw-bubble-btn" role="button" tabindex="0" aria-label="Open chat">
           ${ICONS.chat}
         </div>
