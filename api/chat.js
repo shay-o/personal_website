@@ -286,18 +286,14 @@ export default async function handler(req, res) {
         data.choices[0].message.content = reply;
       }
 
-      const { AIRTABLE_API_KEY, AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME } = process.env;
-      console.log('Airtable debug — sessionId:', !!sessionId, 'key:', !!AIRTABLE_API_KEY, 'base:', !!AIRTABLE_BASE_ID, 'table:', !!AIRTABLE_TABLE_NAME);
-
       if (sessionId) {
         const currentQuestion = userMessages.filter(m => m.role === 'user').at(-1)?.content ?? '';
-        // Log conversation (non-blocking)
-        logToAirtable(sessionId, userMessages, reply).catch(err =>
+        // Await logging so Vercel doesn't kill the function before the requests complete
+        await logToAirtable(sessionId, userMessages, reply).catch(err =>
           console.error('Airtable logging error:', err)
         );
-        // Log gap question to separate table if applicable (non-blocking)
         if (isGap) {
-          logGapToAirtable(sessionId, currentQuestion).catch(err =>
+          await logGapToAirtable(sessionId, currentQuestion).catch(err =>
             console.error('Airtable gap logging error:', err)
           );
         }
