@@ -281,6 +281,7 @@ export default async function handler(req, res) {
       // Detect and strip the gap marker before the user sees it
       const GAP_MARKER = '[DATA_GAP] ';
       const isGap = reply.startsWith(GAP_MARKER);
+      console.log('Gap debug — isGap:', isGap, 'reply prefix:', reply.slice(0, 40));
       if (isGap) {
         reply = reply.slice(GAP_MARKER.length);
         data.choices[0].message.content = reply;
