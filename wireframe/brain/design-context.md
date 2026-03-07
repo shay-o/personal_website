@@ -80,3 +80,4 @@ No live screenshots available — site is a template with placeholder content. A
 
 ## Wireframes Generated
 - `wireframe/personal-website.html` — 4 options: Safe Option (scroll), Text-First (lusmo.re style), Hub & Spoke (tile directory), Accordion (scannable collapse). Recommended: Option 4 (Accordion) for discoverability goal.
+- `wireframe/color-treatment.html` — 4 options: Safe (single accent on interactive states), Warm Ink (colored header, white body), Wayfinding (color on expanded states/company names), Type-Led (color in text only). Recommended: Option 2 (Warm Ink).
