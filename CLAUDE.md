@@ -2,6 +2,10 @@
 **Repo:** https://github.com/shay-o/personal_website
 **Live site:** shayoreilly.net (GitHub Pages — DNS not yet configured)
 
+## Status
+- Most recent: Medicare overview page refined; chat logging now stable via awaited Airtable calls.
+- Focus: polish public-facing copy and get custom domain fully wired up.
+
 ## Current tasks
 - [x] Airtable logging — working. Root cause was fire-and-forget pattern (`logToAirtable().catch()`) being killed by Vercel before completing; fixed by awaiting the calls before returning the response.
 - [ ] Configure GitHub Pages + shayoreilly.net custom domain (Settings → Pages → set source to main, then add CNAME DNS record)
@@ -12,10 +16,8 @@
 
 ## Backlog / ideas
 - Add volunteer section: SF Fire Dept EMS 6 (Feb–Oct 2024), Salesforce donor data work (Oct–Nov 2016)
-- Add education section: Reed College BA History, UNC Kenan-Flagler MBA, IDEO Design Thinking, Scrum cert
 - Automate Medicare report copy from AI-Medicare-Advice-Evaluator repo (GitHub Actions option C)
 - Add a link to my resume. Likely in PDF form.
-- Chatbot: What am I passionate about?
 
 ## Project structure
 - `index.html` / `styles.css` / `script.js` — the site
