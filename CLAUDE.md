@@ -7,10 +7,6 @@
 - Focus: polish public-facing copy and get custom domain fully wired up.
 
 ## Current tasks
-- [x] Airtable logging — working. Root cause was fire-and-forget pattern (`logToAirtable().catch()`) being killed by Vercel before completing; fixed by awaiting the calls before returning the response.
-- [ ] Configure GitHub Pages + shayoreilly.net custom domain (Settings → Pages → set source to main, then add CNAME DNS record)
-- [x] Replace LinkedIn placeholder URL → https://www.linkedin.com/in/shayoreilly/
-- [x] Replace GitHub placeholder URL → https://github.com/shay-o
 - [ ] Write About section bio (2–3 paragraphs + update competency tags)
 - [ ] Update site-bio in header (currently placeholder text about healthtech/fintech — doesn't match Shay's background)
 

@@ -27,6 +27,10 @@ actionable business strategies. Passionate about social impact, with a track rec
 bridging technical execution with executive-level strategy. Currently exploring how AI can
 help people get better access to services.
 
+SEEKING:
+- A role that allows me to apply my product and data expertise to help people get better access to services.
+- Open to product management, consulting, and builder roles
+
 EXPERIENCE:
 
 - Career Break (Sep 2025 — Present)
