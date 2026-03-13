@@ -40,6 +40,6 @@
 - To update Medicare reports: copy new files from AI-Medicare-Advice-Evaluator/reports/ into projects/AI-Medicare-Advice-Evaluator/, rename index.html → overview.html, update matrix_report.html back-link, then push
 
 ## Local development (chatbot)
-- Run the site and `/api/chat` locally: `npm run dev` (uses `vercel dev`).
+- Run the site and `/api/chat` locally: `npm run local` (uses `vercel dev`). Do not use a script named `dev` or Vercel will recursively invoke itself.
 - Put your real `OPENROUTER_API_KEY` in `.env.local` (see `.env.example`). Optional: add Airtable vars for logging.
 - Open the URL shown (e.g. http://localhost:3000) and use the chat; changes to `api/chat.js` apply on next request.
