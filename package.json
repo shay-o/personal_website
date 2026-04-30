@@ -9,6 +9,7 @@
     "@modelcontextprotocol/sdk": "^1.0.4"
   },
   "devDependencies": {
+    "playwright": "^1.59.1",
     "vercel": "^50.32.5"
   }
 }
