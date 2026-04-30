@@ -1,6 +1,7 @@
 {
   "name": "personal-website",
   "private": true,
+  "type": "module",
   "scripts": {
     "local": "vercel dev"
   },
