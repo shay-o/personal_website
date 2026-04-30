@@ -156,10 +156,10 @@ impact on society. I love to build tools that use data to help people make bette
       <button class="acc-header" aria-expanded="false" aria-controls="body-projects">
         <div class="acc-left">
           <span class="acc-title">Projects</span>
-          <span class="acc-summary">AI Medicare Advice Evaluation &middot; Automated Web Measurement</span>
+          <span class="acc-summary">AI Medicare Advice Evaluation &middot; Oakland Open Data Chat &middot; Automated Web Measurement</span>
         </div>
         <div class="acc-right">
-          <span class="acc-meta">2 featured</span>
+          <span class="acc-meta">3 featured</span>
           <span class="acc-arrow" aria-hidden="true">›</span>
         </div>
       </button>
@@ -188,6 +188,32 @@ impact on society. I love to build tools that use data to help people make bette
               <p style="margin-top:10px;display:flex;gap:20px;flex-wrap:wrap;">
                 <a href="projects/AI-Medicare-Advice-Evaluator/overview.html" style="font-size:0.8125rem;color:#111;text-decoration:underline;text-underline-offset:2px;">Project details and data &rarr;</a>
                 <a href="https://github.com/shay-o/AI-Medicare-Advice-Evaluation" target="_blank" rel="noopener" style="font-size:0.8125rem;color:#777;text-decoration:underline;text-underline-offset:2px;">View on GitHub &rarr;</a>
+              </p>
+            </div>
+          </li>
+
+          <!-- Oakland Open Data Chat -->
+          <li class="role-item">
+            <button class="role-header" aria-expanded="false" aria-controls="detail-proj-oakland">
+              <div class="role-info">
+                <span class="role-title">Oakland Open Data Chat</span>
+                <span class="role-company">Chat interface to Oakland's open data &middot; powered by an MCP server</span>
+              </div>
+              <div class="role-right">
+                <span class="role-date">2026</span>
+                <span class="role-arrow" aria-hidden="true">›</span>
+              </div>
+            </button>
+            <div class="role-detail" id="detail-proj-oakland">
+              <p>A natural-language chat interface to Oakland, California's open government data. Built to demonstrate how a third-party app can consume an MCP (Model Context Protocol) server: the page connects to a deployed Oakland Data MCP over streamable HTTP, discovers its tools dynamically, and runs an LLM tool-calling loop to answer questions about crime, 311 requests, street trees, campaign finance, and more.</p>
+              <ul>
+                <li>Real MCP client integration via <code>@modelcontextprotocol/sdk</code> — tools are discovered, not hardcoded</li>
+                <li>Vercel serverless function orchestrates the OpenRouter tool-calling loop with graceful fallback on exhaustion</li>
+                <li>Underlying data is Oakland's Socrata portal (data.oaklandca.gov)</li>
+              </ul>
+              <p style="margin-top:10px;display:flex;gap:20px;flex-wrap:wrap;">
+                <a href="projects/oakland-data/" style="font-size:0.8125rem;color:#111;text-decoration:underline;text-underline-offset:2px;">Try the chat &rarr;</a>
+                <a href="https://github.com/shay-o/Oakland-data-MCP" target="_blank" rel="noopener" style="font-size:0.8125rem;color:#777;text-decoration:underline;text-underline-offset:2px;">View on GitHub &rarr;</a>
               </p>
             </div>
           </li>
