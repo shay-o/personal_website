@@ -90,7 +90,7 @@ async function callOpenRouter(apiKey, body) {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${apiKey}`,
       'HTTP-Referer': 'https://shayoreilly.net',
-      'X-Title': "Shay O'Reilly Portfolio — Oakland Data Chat",
+      'X-Title': "Shay O'Reilly Portfolio - Oakland Data Chat",
     },
     body: JSON.stringify(body),
   });
