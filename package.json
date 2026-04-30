@@ -1,0 +1,13 @@
+{
+  "name": "personal-website",
+  "private": true,
+  "scripts": {
+    "local": "vercel dev"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4"
+  },
+  "devDependencies": {
+    "vercel": "^50.32.5"
+  }
+}
