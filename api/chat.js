@@ -33,9 +33,16 @@ SEEKING:
 
 EXPERIENCE:
 
+- Product and Analytics Consultant — redo.io (May 2026 — Present)
+  Part-time, Oakland, CA (Remote)
+  Providing guidance on product workflow and usage analytics for redo.io, a data and analytics
+  platform for legal professionals working to correct systemic injustices.
+
 - Career Break (Sep 2025 — Present)
-  Intentional career pause focused on renewal and identifying opportunities to apply product
-  and data expertise toward positive social impact.
+  Oakland, CA
+  Taking focused time to transition from product management into customer-facing implementation
+  work at mission-driven companies. Exploring climate/sustainability tech, nonprofit and civic
+  technology, and other software-for-good sectors.
 
 - Principal Product Manager, Data Collection — Adobe Analytics (Sep 2020 — Sep 2025)
   Oakland, CA
