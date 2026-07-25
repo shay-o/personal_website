@@ -59,7 +59,8 @@ EXPERIENCE:
     Casio, and Bajaj
   + Delivered two Adobe Summit presentations on cookieless tracking and privacy to ~1,000
     attendees; presented at Experience League Live on Content Analytics
-  + Co-inventor on US Patent #12124683: Content analytics as part of content creation
+  + Co-inventor on US Patent 12,124,683 B1, "Content Analytics as Part of Content Creation"
+    (Adobe Inc., issued Oct 22, 2024). Full PDF: https://shayoreilly.net/patents/US12124683.pdf
   Notable projects at Adobe Analytics:
   * Edge Enrichment (2021–2023): Led development of three high-performance enrichment services
     (geo lookup, bot detection, device lookup) on Adobe Experience Edge. Achieved single-digit
@@ -148,7 +149,7 @@ VOLUNTEERING:
 LINKS:
 - LinkedIn: https://www.linkedin.com/in/shayoreilly/
 - GitHub: https://github.com/shay-o
-- Patent: https://ppubs.uspto.gov/pubdoc/images/printed/12124683/pdf/12124683.pdf
+- Patent (US 12,124,683 B1): https://shayoreilly.net/patents/US12124683.pdf
 `;
 
 const SYSTEM_PROMPT = `You are an AI assistant embedded on Shay O'Reilly's personal portfolio website. Your job is to help prospective employers, recruiters, and collaborators learn about Shay's experience, skills, and what they're looking for.

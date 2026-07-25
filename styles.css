@@ -346,6 +346,37 @@ main {
   color: #ccc;
 }
 
+/* Patent credit inside a role detail */
+.role-detail p.role-patent {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 10px;
+  font-size: 0.8125rem;
+  color: #555;
+  margin-top: 14px;
+  margin-bottom: 0;
+  padding-top: 12px;
+  border-top: 1px solid #eee;
+}
+
+.patent-label {
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #888;
+  border: 1px solid #e2e2e2;
+  border-radius: 3px;
+  padding: 1px 6px;
+}
+
+.role-patent a {
+  color: #111;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+}
+
 /* ===================================
    About Section
    =================================== */
