@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shay O'Reilly × Propel Jobs</title>
+<meta name="description" content="A short note on why Shay O'Reilly is a fit to own the Jobs product at Propel.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+  :root {
+    --paper:      #f4f3ec;
+    --surface:    #fbfaf5;
+    --ink:        #1a2420;
+    --muted:      #5f6f66;
+    --faint:      #7d8b82;
+    --accent:     #235c46;
+    --accent-2:   #b96f28;
+    --line:       #d9ddd2;
+    --line-soft:  #e6e9df;
+    --shadow:     0 1px 2px rgba(26,36,32,.04), 0 8px 30px rgba(26,36,32,.05);
+
+    --measure: 40rem;
+    --f-display: "Fraunces", Georgia, "Times New Roman", serif;
+    --f-body: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --f-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:     #131c18;
+      --surface:   #182220;
+      --ink:       #e9e6dc;
+      --muted:     #9fada4;
+      --faint:     #7f8d84;
+      --accent:    #63c79e;
+      --accent-2:  #e0a45c;
+      --line:      #27352e;
+      --line-soft: #202c27;
+      --shadow:    0 1px 2px rgba(0,0,0,.25), 0 12px 34px rgba(0,0,0,.32);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper:     #131c18;
+    --surface:   #182220;
+    --ink:       #e9e6dc;
+    --muted:     #9fada4;
+    --faint:     #7f8d84;
+    --accent:    #63c79e;
+    --accent-2:  #e0a45c;
+    --line:      #27352e;
+    --line-soft: #202c27;
+    --shadow:    0 1px 2px rgba(0,0,0,.25), 0 12px 34px rgba(0,0,0,.32);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--f-body);
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .wrap {
+    max-width: var(--measure);
+    margin: 0 auto;
+    padding: clamp(1.5rem, 5vw, 3rem) clamp(1.25rem, 5vw, 2rem) 3.5rem;
+  }
+
+  .topbar {
+    max-width: var(--measure);
+    margin: 0 auto;
+    padding: 1.25rem clamp(1.25rem, 5vw, 2rem) 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+  .mark {
+    font-family: var(--f-mono);
+    font-size: .72rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .toggle {
+    font-family: var(--f-mono);
+    font-size: .72rem;
+    letter-spacing: .06em;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: .35rem .7rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    transition: border-color .2s, color .2s;
+  }
+  .toggle:hover { border-color: var(--accent); color: var(--ink); }
+  .toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .eyebrow {
+    font-family: var(--f-mono);
+    font-size: .74rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    margin: 0 0 1.1rem;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 1.6rem;
+    height: 1px;
+    background: var(--accent);
+    opacity: .5;
+  }
+
+  .hero { padding-top: clamp(.5rem, 3vw, 1.5rem); }
+  .greeting {
+    font-family: var(--f-display);
+    font-weight: 500;
+    font-size: 1.34rem;
+    line-height: 1.45;
+    letter-spacing: -.005em;
+    color: var(--ink);
+    max-width: 34rem;
+    margin: 0 0 1.5rem;
+  }
+  .greeting + .greeting { color: var(--muted); }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem .9rem;
+    font-family: var(--f-mono);
+    font-size: .78rem;
+    letter-spacing: .02em;
+    color: var(--faint);
+    border-top: 1px solid var(--line);
+    padding-top: 1.1rem;
+  }
+  .meta span { white-space: nowrap; }
+  .meta span + span::before {
+    content: "·";
+    margin-right: .9rem;
+    color: var(--line);
+  }
+
+  section { margin-top: clamp(2.5rem, 6vw, 3.5rem); }
+  h2 {
+    font-family: var(--f-display);
+    font-weight: 500;
+    font-size: clamp(1.4rem, 3.3vw, 1.7rem);
+    line-height: 1.2;
+    letter-spacing: -.01em;
+    text-wrap: balance;
+    margin: 0 0 1rem;
+  }
+  p { margin: 0 0 1.1rem; }
+  p:last-child { margin-bottom: 0; }
+  .lead { font-size: 1.04rem; }
+  strong { font-weight: 600; }
+  a { color: var(--accent); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+
+  .evidence { display: flex; flex-direction: column; gap: .9rem; margin-top: 1.5rem; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line-soft);
+    border-radius: 14px;
+    padding: 1.35rem 1.5rem;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--accent);
+    opacity: .8;
+  }
+  .card .askedfor {
+    font-family: var(--f-mono);
+    font-size: .72rem;
+    letter-spacing: .04em;
+    color: var(--faint);
+    margin: 0 0 .6rem;
+  }
+  .card .askedfor b { color: var(--accent-2); font-weight: 500; }
+  .card h3 {
+    font-family: var(--f-display);
+    font-weight: 500;
+    font-size: 1.18rem;
+    line-height: 1.25;
+    margin: 0 0 .5rem;
+  }
+  .card p { font-size: .97rem; line-height: 1.55; color: var(--ink); margin: 0; }
+  .card p .q { font-style: italic; }
+
+  .honest {
+    border: 1px dashed var(--line);
+    border-radius: 14px;
+    padding: 1.5rem 1.6rem;
+    margin-top: 1.5rem;
+    background: transparent;
+  }
+  .honest h2 { margin-bottom: .7rem; }
+  .honest .lead { color: var(--ink); }
+
+  .close { margin-top: clamp(2.5rem, 6vw, 3.5rem); }
+  .close .note {
+    font-size: 1.02rem;
+    color: var(--muted);
+    margin: 0 0 1.5rem;
+  }
+  .contact {
+    border-top: 1px solid var(--line);
+    padding-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .65rem;
+  }
+  .contact a {
+    font-family: var(--f-mono);
+    font-size: .82rem;
+    letter-spacing: .02em;
+    text-decoration: none;
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: .5rem .95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    transition: border-color .2s, color .2s;
+  }
+  .contact a:hover { border-color: var(--accent); color: var(--accent); }
+  .contact a .k { color: var(--faint); }
+  .contact a:hover .k { color: var(--accent); }
+
+  footer {
+    margin-top: 2.5rem;
+    font-family: var(--f-mono);
+    font-size: .72rem;
+    letter-spacing: .03em;
+    color: var(--faint);
+    line-height: 1.6;
+  }
+
+  .rise { opacity: 0; transform: translateY(12px); animation: rise .7s cubic-bezier(.2,.7,.2,1) forwards; }
+  .d1 { animation-delay: .04s; } .d2 { animation-delay: .12s; } .d3 { animation-delay: .2s; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rise { animation: none; opacity: 1; transform: none; }
+    * { scroll-behavior: auto; }
+  }
+
+  @media (max-width: 480px) {
+    body { font-size: 17px; }
+    .card { padding: 1.2rem 1.15rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="mark">A note · for Propel</span>
+  <button class="toggle" id="themeToggle" type="button" aria-label="Toggle color theme">
+    <span id="toggleIcon">☾</span><span id="toggleText">Dark</span>
+  </button>
+</div>
+
+<main class="wrap">
+
+  <header class="hero">
+    <p class="greeting rise d1">Greetings Propel team! You are looking for someone to own the Jobs product and I am the person to do it. This role aligns strongly with my product management experience and I am a huge fan of Propel and its mission.</p>
+    <p class="greeting rise d1">I would welcome the opportunity to discuss this further.</p>
+    <div class="meta rise d2">
+      <span>Shay O'Reilly</span>
+      <span>SF Bay Area</span>
+      <span>ex-Adobe Principal PM</span>
+      <span>Available now</span>
+    </div>
+  </header>
+
+  <section>
+    <p class="eyebrow">Where I fit</p>
+    <h2>You named four things. Here is where I have done each.</h2>
+
+    <div class="evidence">
+      <article class="card">
+        <p class="askedfor">You want: <b>a team of one, owning the experience and the outcomes</b></p>
+        <h3>Shipping alone, end to end</h3>
+        <p>I run a solo product engagement at Redo.io, a nonprofit legal-analytics platform: I analyze the workflows, decide what to change, and build the mocks myself. Before that I owned a data-collection roadmap across two products at Adobe, and the outcomes with it, including onboarding cut from months to minutes.</p>
+      </article>
+
+      <article class="card">
+        <p class="askedfor">You want: <b>early-stage experimentation and market validation for a new line of business</b></p>
+        <h3>Testing the bet, and calling it off when the data says so</h3>
+        <p>At Cardlytics I built the measurement methodology and the reporting platform used to prove whether new products worked. At Adobe I ran willingness-to-pay research to decide what to build, and once recommended we <span class="q">not</span> build a feature after the data showed the affected customers would not churn.</p>
+      </article>
+
+      <article class="card">
+        <p class="askedfor">You want: <b>someone comfortable managing partner relationships</b></p>
+        <h3>Making a partnership real</h3>
+        <p>I built Cardlytics' data partnership with Meta cross-company, defining the integration directly with their team, and was the product in the room with enterprise partners like MLB and Telstra at Adobe. Employer and workforce partnerships are the kind of relationship I have run for years.</p>
+      </article>
+
+      <article class="card">
+        <p class="askedfor">You want: <b>someone who wants true ownership and autonomy</b></p>
+        <h3>Ownership is the thing I am looking for</h3>
+        <p>I left a large org on purpose, to get closer to the work and away from coordination overhead. A team-of-one mandate reads as a feature to me, not a warning.</p>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <div class="honest">
+      <p class="eyebrow">The honest part</p>
+      <h2>Where I would be learning</h2>
+      <p class="lead">I have not built a consumer app or a two-sided marketplace, and a job board is both. My record is in enterprise data tools, not mass-market mobile.</p>
+      <p>Against that: I tend to learn a domain until I am the person others come to, I ground decisions in watching real people rather than asking them, and I would bring the measurement rigor to run a job board as a continuous experiment in what actually helps someone find work.</p>
+    </div>
+  </section>
+
+  <section class="close">
+    <p class="note">The rest of my background is elsewhere on this site.</p>
+    <nav class="contact" aria-label="Contact and links">
+      <a href="https://www.shayoreilly.net"><span class="k">experience</span> shayoreilly.net</a>
+      <a href="mailto:shayporeilly@gmail.com"><span class="k">email</span> shayporeilly@gmail.com</a>
+      <a href="https://www.linkedin.com/in/shayoreilly/" target="_blank" rel="noopener"><span class="k">linkedin</span> /in/shayoreilly</a>
+      <a href="https://www.shayoreilly.net/projects/AI-Medicare-Advice-Evaluator/overview.html"><span class="k">project</span> Medicare AI evaluator</a>
+    </nav>
+    <footer>
+      Shay O'Reilly · Product leader, data products and applied AI · 15+ years, most recently Principal PM at Adobe Analytics.
+    </footer>
+  </section>
+
+</main>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var btn = document.getElementById("themeToggle");
+    var icon = document.getElementById("toggleIcon");
+    var text = document.getElementById("toggleText");
+
+    function systemDark() {
+      return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    }
+    function current() {
+      var t = root.getAttribute("data-theme");
+      if (t === "dark" || t === "light") return t;
+      return systemDark() ? "dark" : "light";
+    }
+    function paint() {
+      var dark = current() === "dark";
+      icon.textContent = dark ? "☀" : "☾";
+      text.textContent = dark ? "Light" : "Dark";
+    }
+
+    var stored = null;
+    try { stored = localStorage.getItem("propel-theme"); } catch (e) {}
+    if (stored === "dark" || stored === "light") root.setAttribute("data-theme", stored);
+    paint();
+
+    btn.addEventListener("click", function () {
+      var next = current() === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", next);
+      try { localStorage.setItem("propel-theme", next); } catch (e) {}
+      paint();
+    });
+  })();
+</script>
+</body>
+</html>
