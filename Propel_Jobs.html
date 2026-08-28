@@ -386,6 +386,26 @@
       paint();
     });
   })();
+
+  // Fire-and-forget page-view beacon → /api/track (logs to Airtable).
+  (function () {
+    try {
+      var data = JSON.stringify({
+        page: "Propel_Jobs",
+        referrer: document.referrer || ""
+      });
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon("/api/track", new Blob([data], { type: "application/json" }));
+      } else {
+        fetch("/api/track", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: data,
+          keepalive: true
+        }).catch(function () {});
+      }
+    } catch (e) { /* tracking must never break the page */ }
+  })();
 </script>
 </body>
 </html>
